@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="et"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c2c9bb",
+                    "on-primary-fixed-variant": "#23501e",
+                    "on-error": "#ffffff",
+                    "on-background": "#181c1a",
+                    "surface-container-highest": "#e0e3df",
+                    "inverse-primary": "#a1d494",
+                    "on-secondary-container": "#795548",
+                    "surface-variant": "#e0e3df",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#bcf0ae",
+                    "surface-tint": "#3b6934",
+                    "on-tertiary-fixed": "#2d1600",
+                    "primary-container": "#2d5a27",
+                    "surface-dim": "#d8dbd7",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#ecefeb",
+                    "on-surface-variant": "#42493e",
+                    "outline": "#72796e",
+                    "on-primary-fixed": "#002201",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb874",
+                    "on-tertiary-container": "#ffb268",
+                    "secondary-container": "#fdcdbc",
+                    "secondary-fixed": "#ffdbcf",
+                    "inverse-surface": "#2d312f",
+                    "surface-bright": "#f7faf6",
+                    "secondary-fixed-dim": "#ebbcac",
+                    "surface": "#f7faf6",
+                    "error": "#ba1a1a",
+                    "primary": "#154212",
+                    "on-secondary-fixed-variant": "#603f33",
+                    "on-primary-container": "#9dd090",
+                    "surface-container-high": "#e6e9e5",
+                    "surface-container-low": "#f1f4f0",
+                    "on-secondary-fixed": "#2e150b",
+                    "secondary": "#7a5649",
+                    "primary-fixed-dim": "#a1d494",
+                    "on-surface": "#181c1a",
+                    "tertiary": "#572f00",
+                    "inverse-on-surface": "#eef2ee",
+                    "background": "#f7faf6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdcbf",
+                    "tertiary-container": "#784300",
+                    "on-tertiary-fixed-variant": "#6b3b00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .text-retailer-bauhof { color: #F7941D; }
+        .bg-retailer-bauhof { background-color: #F7941D; }
+        .text-retailer-espak { color: #01285F; }
+        .bg-retailer-espak { background-color: #01285F; }
+        .text-retailer-decora { color: #E2001A; }
+        .bg-retailer-decora { background-color: #E2001A; }
+        .text-retailer-ehituseabc { color: #009639; }
+        .bg-retailer-ehituseabc { background-color: #009639; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Anchor -->
+<header class="bg-[#f7faf6] dark:bg-stone-950 flex items-center justify-between px-6 py-4 w-full max-w-7xl mx-auto sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#154212] dark:text-green-400 text-3xl" data-icon="eco">eco</span>
+<h1 class="font-headline font-semibold text-2xl tracking-tight text-[#154212] dark:text-green-400">Sinu aed</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#154212] dark:text-green-400 font-medium transition-all" href="#">Avasta</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#154212] transition-colors" href="#">Minu aed</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#154212] transition-colors" href="#">Seaded</a>
+</nav>
+<button class="material-symbols-outlined p-2 rounded-xl hover:bg-[#f1f4f0] transition-colors" data-icon="search">search</button>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8 pb-32">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-on-surface-variant mb-6">
+<a class="hover:text-primary transition-colors" href="#">Avaleht</a>
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Mullad ja väetised</a>
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-medium">Biolan Must Muld</span>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Left Column: Product Image & Details -->
+<div class="lg:col-span-5 space-y-8">
+<div class="relative group">
+<div class="absolute -inset-4 bg-primary/5 rounded-xl blur-2xl group-hover:bg-primary/10 transition-all duration-700"></div>
+<div class="relative bg-surface-container-lowest rounded-xl overflow-hidden aspect-square flex items-center justify-center p-8">
+<img alt="Biolan Aiamaa Must Muld" class="object-contain h-full w-full transform group-hover:scale-105 transition-transform duration-700" data-alt="large bag of premium organic garden soil with biolane branding sitting on a weathered wooden garden bench in soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD59xsMzD7ii2WgYkIJdggzDLf_rmEzxYds21oUQbY6MB2uKOKs78cff9WUIb1y4RH12p56Djquda1pAOYkGPwQiah8EjLV5qVJFSk_v-mfrzzqQd4KgX9nkaW5PLFfbOkvUVL-l85v-2ESpV-RMmXWWqJ2Mhwx7B4arE0hu3lTQkUKKYxnCL9SAcXh9MqJVwT4_8gLLhMgBZ_d2IclZuysfXGTucPlak6_ZIN3jKoPfCogRNp_nLtXjue3QPx05Io5dvilTZn03Yl0"/>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold uppercase tracking-wider">Biolan</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-semibold uppercase tracking-wider">60 Litrit</span>
+</div>
+<h2 class="font-headline text-3xl md:text-4xl font-bold text-on-surface leading-tight">Biolan Aiamaa Must Muld 60L</h2>
+<p class="text-on-surface-variant leading-relaxed">Kvaliteetne väetatud ja lubjatud must muld kasutamiseks aias, lillepeenardes ja kasvuhoonetes. Sisaldab rikkalikult huumust.</p>
+</div>
+</div>
+<!-- Right Column: Price Comparison & Analytics -->
+<div class="lg:col-span-7 space-y-10">
+<!-- Price Comparison Card -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_20px_40px_rgba(24,28,26,0.06)] relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="text-[10rem] font-bold text-primary/5 absolute -top-12 -right-8 pointer-events-none select-none">€</span>
+</div>
+<h3 class="font-headline text-xl font-semibold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="local_offer">local_offer</span>
+                        Hinnad kauplustes
+                    </h3>
+<div class="space-y-1">
+<!-- Bauhof - Cheapest -->
+<div class="flex items-center justify-between p-4 bg-primary/5 rounded-xl border-2 border-primary/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-retailer-bauhof flex items-center justify-center text-white font-bold text-xs">B</div>
+<div>
+<p class="font-semibold text-on-surface">Bauhof</p>
+<span class="inline-flex items-center gap-1 text-xs font-medium text-primary uppercase tracking-tighter">
+<span class="material-symbols-outlined text-xs" data-icon="verified" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                        Soodsaim valik
+                                    </span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<p class="font-headline text-2xl font-bold text-primary">4.95€</p>
+<button class="bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:opacity-90 transition-all flex items-center gap-2">
+                                    Ava poes
+                                    <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Espak -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-xl group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-retailer-espak flex items-center justify-center text-white font-bold text-xs">E</div>
+<p class="font-semibold text-on-surface">Espak</p>
+</div>
+<div class="flex items-center gap-6">
+<p class="font-headline text-2xl font-bold text-on-surface">5.20€</p>
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-lg font-medium hover:bg-surface-container-highest transition-all flex items-center gap-2">
+                                    Ava poes
+                                    <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Decora -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-xl group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-retailer-decora flex items-center justify-center text-white font-bold text-xs">D</div>
+<p class="font-semibold text-on-surface">Decora</p>
+</div>
+<div class="flex items-center gap-6">
+<p class="font-headline text-2xl font-bold text-on-surface">5.50€</p>
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-lg font-medium hover:bg-surface-container-highest transition-all flex items-center gap-2">
+                                    Ava poes
+                                    <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Ehituse ABC -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-xl group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-retailer-ehituseabc flex items-center justify-center text-white font-bold text-xs">ABC</div>
+<p class="font-semibold text-on-surface">Ehituse ABC</p>
+</div>
+<div class="flex items-center gap-6">
+<p class="font-headline text-2xl font-bold text-on-surface">5.99€</p>
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-lg font-medium hover:bg-surface-container-highest transition-all flex items-center gap-2">
+                                    Ava poes
+                                    <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Price History Chart Placeholder -->
+<section class="bg-surface-container-low rounded-xl p-8">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="font-headline text-xl font-semibold">Hinnaajalugu</h3>
+<p class="text-sm text-on-surface-variant">Viimased 30 päeva</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-lowest px-3 py-1 rounded-full text-xs font-medium text-primary shadow-sm">30p</button>
+<button class="px-3 py-1 rounded-full text-xs font-medium text-on-surface-variant">90p</button>
+</div>
+</div>
+<!-- SVG Chart Mockup -->
+<div class="h-48 w-full relative flex items-end overflow-hidden">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 100">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#154212" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#154212" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q50,75 100,85 T200,60 T300,70 T400,50 L400,100 L0,100 Z" fill="url(#chartGradient)"></path>
+<path d="M0,80 Q50,75 100,85 T200,60 T300,70 T400,50" fill="none" stroke="#154212" stroke-linecap="round" stroke-width="2.5"></path>
+<circle cx="400" cy="50" fill="#154212" r="4"></circle>
+</svg>
+<div class="absolute right-0 top-1/2 -translate-y-12 bg-primary text-white text-[10px] px-2 py-1 rounded-md font-bold shadow-lg">4.95€</div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold">
+<span>1. Märts</span>
+<span>15. Märts</span>
+<span>Täna</span>
+</div>
+</section>
+</div>
+</div>
+<!-- Related Products Section -->
+<section class="mt-20">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h3 class="font-headline text-2xl font-bold">Sarnased tooted</h3>
+<p class="text-on-surface-variant">Võimalik, et need sobivad su aeda veel paremini</p>
+</div>
+<button class="text-primary font-semibold flex items-center gap-1 group">
+                    Vaata kõiki
+                    <span class="material-symbols-outlined transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 group cursor-pointer hover:shadow-xl transition-all">
+<div class="aspect-square bg-surface-container-low rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+<img alt="Related soil 1" class="w-3/4 h-3/4 object-contain group-hover:scale-110 transition-transform duration-500" data-alt="a smaller bag of potting soil with colorful flower illustrations on the packaging, white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8ObMB5lYXjlUcm8M75rg9Rd4ItmOaxDYsAXZUWQhxKtTrTz4KbPzbXuIUFBhiT94jm0-ou5UqW19g2_eJvar3lWMTFXhx7CCWS2ZDaaiElO9xL5qZZwKPnLWvhnJ8aOB5rGKi79SeQMt6Q-c9-yTxT-KJnOnR9XFwVtOtISGLF995pM5IDqXbkYJ7KAImemczOFSi15g3txPwhAzSC7WyENpZqVxNAYPZr1H6laRFOpBd-LZ4Rc0TjC3d23CCq_F9YstAQFeQb6Ic"/>
+</div>
+<h4 class="font-semibold text-sm line-clamp-2 mb-2">Biolan Suvelillemuld 30L</h4>
+<p class="text-primary font-bold">6.50€</p>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 group cursor-pointer hover:shadow-xl transition-all">
+<div class="aspect-square bg-surface-container-low rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+<img alt="Related mulch" class="w-3/4 h-3/4 object-contain group-hover:scale-110 transition-transform duration-500" data-alt="large bag of dark pine bark mulch for landscaping on a crisp white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ0VwcuLTppYzNUNSkbDGPJAt52vPD67ufrCnHatUq6wD_TAjGxPkxuRdRJ2ili11eYTPUdI7E539GupW0L0yA7QWlrVBXPHFMJf_EQbwGlnXW83FGGI3d9o7LrkYQZk_wMuRo8D124O5aHMpfEUd-J4xPIfwq769rRjpeRjyWwROIfFgVmsc--77ey5jxe4mK0AmEqhYRt5Yq9uf1wZmHPTcjqq2CL6BozE7TlY25LefUZUUhn2TGciACEfml0h3vHNXtoLHevwRX"/>
+</div>
+<h4 class="font-semibold text-sm line-clamp-2 mb-2">Männikooremultš 50L</h4>
+<p class="text-primary font-bold">5.90€</p>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 group cursor-pointer hover:shadow-xl transition-all">
+<div class="aspect-square bg-surface-container-low rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+<img alt="Related compost" class="w-3/4 h-3/4 object-contain group-hover:scale-110 transition-transform duration-500" data-alt="bag of organic compost soil with green leaf icons on the label, white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrfdabvONWhR4xTzQytdER4DoVFwb5qrSXFaGetW38tL4mXXYwQDbJrpr-Yy5DlDWRHwhP2DTZDQNadJx7LBWPkZ9THFsVcz0Wmfn5umliGr9IsgGvps2hkJDwU73PwyhNR4nIrepmAYEif6O-ZKGVYjZ7pT3ZpXh-Hv6sUuN6sDDVsQ7d4zm1TCRBS26oM7bmtT5IerEdZ-XpzeQvIWn10zjPtnIcLQhzaZBH5M-XfbNMyextVYRCtLvBvHYKHf7s8tBtnXtAA5MT"/>
+</div>
+<h4 class="font-semibold text-sm line-clamp-2 mb-2">Kekkilä Kompostmuld 40L</h4>
+<p class="text-primary font-bold">4.20€</p>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 group cursor-pointer hover:shadow-xl transition-all">
+<div class="aspect-square bg-surface-container-low rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+<img alt="Related fertilizer" class="w-3/4 h-3/4 object-contain group-hover:scale-110 transition-transform duration-500" data-alt="small box of concentrated garden fertilizer granules with vibrant vegetable imagery on the box" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMNIryUBUBzTRRCmcGoNuj4LofTiuaox-LdDZhD5KFJsF8BDvhWM9MSXrwXQKMaDbc31_bAy0ATTukgvkICQxXuacMqxEq7Veb0Tlc8xnQXNZE04o59X8_cBw09fsrotovS_dYzgNl-n-O1nLT4uL3p_drg386emmwVNHJPCUK6vJ5kV6gO1OV_kPojY1fjTHPeJmI-IGXcy2WfVF_nH6SQfyeCOxDjJ6afWs1mF1ZOwYP8ar3MajMnDe2p-1LKV2fAZ65cn-D0vnM"/>
+</div>
+<h4 class="font-semibold text-sm line-clamp-2 mb-2">Biolan Universaalväetis 1kg</h4>
+<p class="text-primary font-bold">8.95€</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Mobile Only) -->
+<nav class="md:hidden bg-[#ffffff]/80 dark:bg-stone-900/80 backdrop-blur-xl border-t border-[#154212]/10 dark:border-white/10 fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 shadow-[0_-10px_30px_rgba(21,66,18,0.05)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-3 hover:text-[#154212] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#2D5A27] text-white rounded-xl p-3 shadow-lg scale-95 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view" data-weight="fill" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-3 hover:text-[#154212] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</a>
+</nav>
+</body></html>

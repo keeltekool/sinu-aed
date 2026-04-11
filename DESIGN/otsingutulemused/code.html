@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="et"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c2c9bb",
+                    "on-primary-fixed-variant": "#23501e",
+                    "on-error": "#ffffff",
+                    "on-background": "#181c1a",
+                    "surface-container-highest": "#e0e3df",
+                    "inverse-primary": "#a1d494",
+                    "on-secondary-container": "#795548",
+                    "surface-variant": "#e0e3df",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#bcf0ae",
+                    "surface-tint": "#3b6934",
+                    "on-tertiary-fixed": "#2d1600",
+                    "primary-container": "#2d5a27",
+                    "surface-dim": "#d8dbd7",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#ecefeb",
+                    "on-surface-variant": "#42493e",
+                    "outline": "#72796e",
+                    "on-primary-fixed": "#002201",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb874",
+                    "on-tertiary-container": "#ffb268",
+                    "secondary-container": "#fdcdbc",
+                    "secondary-fixed": "#ffdbcf",
+                    "inverse-surface": "#2d312f",
+                    "surface-bright": "#f7faf6",
+                    "secondary-fixed-dim": "#ebbcac",
+                    "surface": "#f7faf6",
+                    "error": "#ba1a1a",
+                    "primary": "#154212",
+                    "on-secondary-fixed-variant": "#603f33",
+                    "on-primary-container": "#9dd090",
+                    "surface-container-high": "#e6e9e5",
+                    "surface-container-low": "#f1f4f0",
+                    "on-secondary-fixed": "#2e150b",
+                    "secondary": "#7a5649",
+                    "primary-fixed-dim": "#a1d494",
+                    "on-surface": "#181c1a",
+                    "tertiary": "#572f00",
+                    "inverse-on-surface": "#eef2ee",
+                    "background": "#f7faf6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdcbf",
+                    "tertiary-container": "#784300",
+                    "on-tertiary-fixed-variant": "#6b3b00",
+                    "variable-bauhof": "#F7941D",
+                    "variable-espak": "#01285F",
+                    "variable-decora": "#E2001A",
+                    "variable-ehituseabc": "#009639"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .font-variation-fill {
+        font-variation-settings: 'FILL' 1;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-[#f7faf6] dark:bg-stone-950 sticky top-0 z-40 transition-all">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#154212] dark:text-green-400 text-2xl" data-icon="eco">eco</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-semibold text-2xl tracking-tight text-[#154212] dark:text-green-400">Sinu aed</h1>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<nav class="flex gap-4">
+<a class="text-[#154212] dark:text-green-400 px-4 py-2 rounded-xl font-medium transition-colors hover:bg-[#f1f4f0]" href="#">Otsi</a>
+<a class="text-stone-500 dark:text-stone-400 px-4 py-2 rounded-xl font-medium transition-colors hover:bg-[#f1f4f0]" href="#">Kategooriad</a>
+<a class="text-stone-500 dark:text-stone-400 px-4 py-2 rounded-xl font-medium transition-colors hover:bg-[#f1f4f0]" href="#">Info</a>
+</nav>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center hover:bg-[#f1f4f0] transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 md:px-6 mt-4">
+<!-- Search Bar Section -->
+<div class="relative w-full mb-8">
+<div class="bg-surface-container-high rounded-xl p-1 flex items-center shadow-sm">
+<div class="flex-1 flex items-center px-4">
+<span class="material-symbols-outlined text-outline mr-3" data-icon="search">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 font-medium placeholder:text-outline" placeholder="Otsi aiatarbeid..." type="text" value="Biolan muld 60L"/>
+</div>
+<button class="bg-primary text-white px-6 py-2.5 rounded-lg font-semibold mr-1 transition-all hover:opacity-90 active:scale-95">
+                    Otsi
+                </button>
+</div>
+</div>
+<!-- Header & Stats -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
+<div>
+<h2 class="font-headline text-3xl font-bold tracking-tight text-on-background mb-1">12 toodet leitud</h2>
+<p class="text-on-surface-variant font-medium">Parimad pakkumised Biolan 60L mullale</p>
+</div>
+<!-- Filter Chips -->
+<div class="flex flex-wrap gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface-variant text-sm font-medium whitespace-nowrap hover:bg-surface-container-low transition-colors">Bauhof</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface-variant text-sm font-medium whitespace-nowrap hover:bg-surface-container-low transition-colors">Espak</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface-variant text-sm font-medium whitespace-nowrap hover:bg-surface-container-low transition-colors">Decora</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface-variant text-sm font-medium whitespace-nowrap hover:bg-surface-container-low transition-colors">Ehituse ABC</button>
+<button class="px-4 py-2 rounded-full bg-tertiary-container text-tertiary-fixed text-sm font-semibold whitespace-nowrap flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="star">star</span>
+                    Ainult soodus
+                </button>
+</div>
+</div>
+<!-- Results Grid -->
+<div class="grid grid-cols-1 gap-6">
+<!-- ProductComparisonCard 1 (Main Hero) -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(24,28,26,0.06)] group transition-all hover:translate-y-[-2px] cursor-pointer">
+<div class="flex flex-col md:flex-row">
+<!-- Image with Overlap -->
+<div class="relative w-full md:w-1/3 lg:w-1/4 p-6 bg-surface-container-low flex items-center justify-center overflow-hidden">
+<img alt="Biolan Aiamaa Must Muld" class="h-48 md:h-64 object-contain transform group-hover:scale-105 transition-transform duration-500" data-alt="close-up of a premium black garden soil bag with green branding on a clean minimalist background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUvpWdZQJ36bBU0vefOCGXWGEiBga_Gz7pGZbQuQ6-dYHcs4DUYw2tzaZLcb9PHyTd3mYIe5lbgAiM4G6U-aEEsik--UPs4UoC-R42rsMqCUylAhhU_l978QEsij7t6hBK8c1gEbZunK35j_CHQlkyJylImLQACo_elVJFh11C7bIrJLaHGk4KRJpW5tqLyiO-daYAa-WIUpUiKrAJ_q0X9cD1H3A7w5SvRu-ZHIMbeH1Nul8hMTMBW7DW2Q9h5cQmWwAyCslWGWOh"/>
+<div class="absolute top-4 left-4 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            Aedniku valik
+                        </div>
+</div>
+<!-- Content -->
+<div class="flex-1 p-6 md:p-8">
+<div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
+<div>
+<span class="text-secondary font-bold text-xs uppercase tracking-widest mb-2 block">Biolan</span>
+<h3 class="font-headline text-2xl font-semibold text-on-background leading-tight">Biolan Aiamaa Must Muld 60L</h3>
+<p class="text-on-surface-variant mt-2 max-w-lg">Toitaineterikas must muld, mis sobib ideaalselt nii kasvukastidesse kui peenardele. Kõrge huumusesisaldusega.</p>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs font-label uppercase text-on-surface-variant mb-1">Säästad kuni</span>
+<span class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-bold text-lg">€0.29</span>
+</div>
+</div>
+<!-- Price Comparison List -->
+<div class="space-y-1">
+<!-- Ehituse ABC -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-[#f1f4f0] hover:bg-white transition-colors border border-transparent hover:border-primary/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[10px]" style="background-color: #009639;">ABC</div>
+<span class="font-semibold text-on-surface">Ehituse ABC</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-primary font-headline text-xl font-bold">€3.20</span>
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Espak -->
+<div class="flex items-center justify-between p-4 rounded-lg hover:bg-[#f1f4f0] transition-colors border border-transparent">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[10px]" style="background-color: #01285F;">ESP</div>
+<span class="font-semibold text-on-surface">Espak</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="text-primary font-headline text-xl font-bold">€3.29</span>
+<span class="text-error text-xs font-bold">-39%</span>
+</div>
+<span class="material-symbols-outlined text-outline text-2xl" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Decora -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-[#f1f4f0] hover:bg-white transition-colors border border-transparent">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[10px]" style="background-color: #E2001A;">DEC</div>
+<span class="font-semibold text-on-surface">Decora</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="text-primary font-headline text-xl font-bold">€3.29</span>
+<span class="text-error text-xs font-bold">-37%</span>
+</div>
+<span class="material-symbols-outlined text-outline text-2xl" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Bauhof -->
+<div class="flex items-center justify-between p-4 rounded-lg hover:bg-[#f1f4f0] transition-colors border border-transparent">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[10px]" style="background-color: #F7941D;">BAU</div>
+<span class="font-semibold text-on-surface">Bauhof</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-on-surface font-headline text-xl font-bold">€3.49</span>
+<span class="material-symbols-outlined text-outline text-2xl" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- More Results (Simplified Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-4 items-center group cursor-pointer hover:shadow-lg transition-all">
+<div class="w-24 h-24 bg-surface-container-low rounded-lg p-2 flex items-center justify-center">
+<img alt="Biolan Külvimuld" class="h-20 object-contain group-hover:scale-110 transition-transform" data-alt="close-up of premium potting soil in a white and green bag, soft natural light, garden setting blur" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkxO6DkljVtT78IwJQ1L5ie1HyHJVcXB_jQ-cSWi-0AREFG9PFj6guXXIrX2mVrGDAmtivYMtwckwhIul2F2mgpa_uKbPCekaOH1iMd0DQHpLCDctO_JXMOmjcwW8zALQ5AJrOLqAfLw0uuyo_PlRADYEOLbWJaUmnfa8Yy6lFRtVQyL3eyuU5GaaCE4AfJ4wQ6DVnp66YYlVeLVXneSU6kpc5VDJa-fGmalMpMfq95Y8wFH-vC9ZWpcx29UQacTqU9VsK9T9vHfj9"/>
+</div>
+<div class="flex-1">
+<span class="text-secondary text-[10px] font-bold uppercase">Biolan</span>
+<h4 class="font-semibold text-on-background line-clamp-1">Biolan Külvimuld 60L</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-primary font-bold text-lg">€3.99</span>
+<span class="text-on-surface-variant text-xs line-through">€4.50</span>
+</div>
+<div class="mt-2 flex gap-2">
+<div class="w-4 h-4 rounded-full" style="background-color: #009639;"></div>
+<div class="w-4 h-4 rounded-full" style="background-color: #01285F;"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-4 items-center group cursor-pointer hover:shadow-lg transition-all">
+<div class="w-24 h-24 bg-surface-container-low rounded-lg p-2 flex items-center justify-center">
+<img alt="Biolan Suvelillemuld" class="h-20 object-contain group-hover:scale-110 transition-transform" data-alt="colorful garden flower soil packaging with vibrant botanical illustrations, studio lighting, professional product shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKjIHbZljxLozHag2mJph3RKnIpglEPtiACQmuzqgKKKu0xQJUKUUVxaWlj0Z7IIhDXgF7sE5h0gZylX9C_WmUdKOpH_bOfWaP21EsExMp8eGXUNgq2s5fMc1Mg4AdMMSwrK6KwyXKC9lkfiij8nX3H_l9wDGiyPYTUThfee42PYnnOjfVZT9lTXaSY-UIT1uxt4skofJ9rX1ynur9La42sb1u8QCuQ9ngErc6Dv72iIIzIt46BpeGt3z_DoVWX5IRVH16qRpy6in9"/>
+</div>
+<div class="flex-1">
+<span class="text-secondary text-[10px] font-bold uppercase">Biolan</span>
+<h4 class="font-semibold text-on-background line-clamp-1">Biolan Suvelillemuld 60L</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-primary font-bold text-lg">€4.20</span>
+</div>
+<div class="mt-2 flex gap-2">
+<div class="w-4 h-4 rounded-full" style="background-color: #F7941D;"></div>
+<div class="w-4 h-4 rounded-full" style="background-color: #E2001A;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-[#ffffff]/80 dark:bg-stone-900/80 backdrop-blur-xl md:hidden shadow-[0_-10px_30px_rgba(21,66,18,0.05)] rounded-t-2xl border-t border-[#154212]/10">
+<a class="flex flex-col items-center justify-center bg-[#2D5A27] text-white rounded-xl p-3 active:scale-95 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-3 hover:text-[#154212] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-3 hover:text-[#154212] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</a>
+</nav>
+</body></html>

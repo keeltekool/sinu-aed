@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #154212;
+  --color-primary-container: #2D5A27;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #9dd090;
+  --color-secondary: #7a5649;
+  --color-secondary-container: #fdcdbc;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #795548;
+  --color-tertiary: #572f00;
+  --color-tertiary-container: #784300;
+  --color-tertiary-fixed: #ffdcbf;
+  --color-tertiary-fixed-dim: #ffb874;
+  --color-on-tertiary-fixed: #2d1600;
+  --color-surface: #f7faf6;
+  --color-surface-dim: #d8dbd7;
+  --color-surface-bright: #f7faf6;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4f0;
+  --color-surface-container: #ecefeb;
+  --color-surface-container-high: #e6e9e5;
+  --color-surface-container-highest: #e0e3df;
+  --color-on-surface: #181c1a;
+  --color-on-surface-variant: #42493e;
+  --color-on-background: #181c1a;
+  --color-outline: #72796e;
+  --color-outline-variant: #c2c9bb;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-chain-bauhof: #F7941D;
+  --color-chain-espak: #01285F;
+  --color-chain-decora: #E2001A;
+  --color-chain-ehituse-abc: #009639;
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.headline {
+  font-family: var(--font-headline);
+}

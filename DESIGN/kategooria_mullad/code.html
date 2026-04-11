@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="et"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c2c9bb",
+                    "on-primary-fixed-variant": "#23501e",
+                    "on-error": "#ffffff",
+                    "on-background": "#181c1a",
+                    "surface-container-highest": "#e0e3df",
+                    "inverse-primary": "#a1d494",
+                    "on-secondary-container": "#795548",
+                    "surface-variant": "#e0e3df",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#bcf0ae",
+                    "surface-tint": "#3b6934",
+                    "on-tertiary-fixed": "#2d1600",
+                    "primary-container": "#2d5a27",
+                    "surface-dim": "#d8dbd7",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#ecefeb",
+                    "on-surface-variant": "#42493e",
+                    "outline": "#72796e",
+                    "on-primary-fixed": "#002201",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb874",
+                    "on-tertiary-container": "#ffb268",
+                    "secondary-container": "#fdcdbc",
+                    "secondary-fixed": "#ffdbcf",
+                    "inverse-surface": "#2d312f",
+                    "surface-bright": "#f7faf6",
+                    "secondary-fixed-dim": "#ebbcac",
+                    "surface": "#f7faf6",
+                    "error": "#ba1a1a",
+                    "primary": "#154212",
+                    "on-secondary-fixed-variant": "#603f33",
+                    "on-primary-container": "#9dd090",
+                    "surface-container-high": "#e6e9e5",
+                    "surface-container-low": "#f1f4f0",
+                    "on-secondary-fixed": "#2e150b",
+                    "secondary": "#7a5649",
+                    "primary-fixed-dim": "#a1d494",
+                    "on-surface": "#181c1a",
+                    "tertiary": "#572f00",
+                    "inverse-on-surface": "#eef2ee",
+                    "background": "#f7faf6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdcbf",
+                    "tertiary-container": "#784300",
+                    "on-tertiary-fixed-variant": "#6b3b00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px rgba(24, 28, 26, 0.06);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7faf6;
+            color: #181c1a;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface selection:bg-primary-container selection:text-white">
+<!-- TopAppBar -->
+<header class="bg-[#f7faf6] dark:bg-stone-950 sticky top-0 z-50">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#154212] dark:text-green-400 text-3xl" data-icon="eco">eco</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-semibold text-2xl tracking-tight text-[#154212] dark:text-green-400">Sinu aed</h1>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#154212] dark:text-green-400 font-medium hover:bg-[#f1f4f0] transition-colors px-3 py-2 rounded-lg" href="#">Kodu</a>
+<a class="text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f1f4f0] transition-colors px-3 py-2 rounded-lg" href="#">Avasta</a>
+<a class="text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f1f4f0] transition-colors px-3 py-2 rounded-lg" href="#">Minu aed</a>
+</div>
+<button class="p-2 rounded-full hover:bg-[#f1f4f0] transition-colors">
+<span class="material-symbols-outlined text-on-surface" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 pb-32">
+<!-- Category Header -->
+<section class="py-10 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-primary-container rounded-xl flex items-center justify-center text-white shadow-lg overflow-hidden relative">
+<img class="absolute inset-0 object-cover opacity-40" data-alt="Close-up of rich, dark potting soil in a textured heap with small green shoots emerging, soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ1Z1KDJ8HClC-_fR42RurlqaZlw0ZbreoYAKdNSptvXajPjxdxdJ8IH6BvruuYKGXgu-07JP_wRz0JR_0dJL1vOr_VyGGGEBs15NxJ92TlJ-lgeFbZ0RV6Iwvuch8erY3kgpR0dTP_Utg1t5VuT9vO7Kn8gcwvbf0tXUTzUc2v4hWCzDw6rsOf3iTONhbA8tPsndU-Bu1vdJsWvkujYzX47SskJeYDF-lGQuBG5NRKMMLS5EBJ4khFSa5MWGO6B65JwUOuCpAjoub"/>
+<span class="material-symbols-outlined text-3xl relative z-10" data-icon="layers">layers</span>
+</div>
+<div>
+<h2 class="text-4xl font-bold tracking-tight text-primary">Mullad ja turbad</h2>
+<p class="text-on-surface-variant font-medium">Leidsime 124 suurepärast pakkumist</p>
+</div>
+</div>
+</section>
+<!-- Filters Section -->
+<section class="mb-12 flex flex-wrap items-center gap-3">
+<span class="text-label-md font-semibold text-on-surface-variant mr-2 uppercase tracking-widest text-[10px]">Sorteeri:</span>
+<button class="bg-primary text-white px-5 py-2.5 rounded-full font-medium text-sm transition-all hover:opacity-90 flex items-center gap-2">
+                Odavamad
+                <span class="material-symbols-outlined text-sm" data-icon="arrow_downward">arrow_downward</span>
+</button>
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-full font-medium text-sm hover:bg-surface-container-highest transition-colors">
+                Suurim soodus
+            </button>
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-full font-medium text-sm hover:bg-surface-container-highest transition-colors">
+                Nimi
+            </button>
+<div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+<button class="bg-surface-container-low border border-outline-variant/30 text-on-surface px-5 py-2.5 rounded-full font-medium text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                Filtrid
+            </button>
+</section>
+<!-- Product Bento Grid / Editorial List -->
+<div class="grid grid-cols-1 gap-8">
+<!-- Item 1: Featured (Large) -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-6 editorial-shadow flex flex-col md:flex-row gap-8 items-center border border-primary/5">
+<div class="relative w-full md:w-72 h-72 shrink-0 overflow-hidden rounded-lg bg-surface-container-low">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Premium organic garden soil bag with colorful botanical illustrations, sitting on a wooden garden patio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0lWwGbuImbPCRJrP2Ilt3ZDerhwQ0VBDfVBa9ufB5col1x0hfvbbCcBb2uFu2OQ_xpFg1C3hAAXwExszgOUrwN3eSKPMX1M7-C8KeS2_d4S3NUDwR2buwA6X2ek9VTJUo62Wn3iqScane5JNE7C7FxdUUqHGsQ-StzzlRj34Cq_wY3Gh_9UufRN4W_x2CFBTzC3zsoX0vi-0ZJkHbV5JaNN8Vcut15XvUUuPHBmdAGEmJASgKkovsDniLHTVbVzGtj0fJTue0k4kW"/>
+<div class="absolute top-4 left-4 bg-tertiary text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter">Aedniku valik</div>
+</div>
+<div class="flex-grow flex flex-col justify-between h-full py-4">
+<div>
+<div class="flex items-center gap-2 mb-3">
+<div class="w-6 h-6 rounded-full bg-[#F7941D] flex items-center justify-center text-[8px] text-white font-bold">B</div>
+<span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Bauhof Soovitus</span>
+</div>
+<h3 class="text-2xl font-bold text-on-surface leading-tight mb-2">Biolan Must muld 60L</h3>
+<p class="text-on-surface-variant line-clamp-2 max-w-xl">Universaalne, väetatud ja lubjatud muld kõikidele aia- ja toataimedele. Sisaldab kvaliteetset komposti ja turvast.</p>
+</div>
+<div class="mt-8 flex items-end justify-between">
+<div>
+<span class="text-label-md text-on-surface-variant font-medium block mb-1">Parim hind alates</span>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-primary">€4.90</span>
+<span class="text-on-surface-variant line-through text-sm">€6.50</span>
+</div>
+</div>
+<button class="bg-primary-container text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2">
+                            Võrdle hindu
+                            <span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Standard Row -->
+<div class="bg-surface-container-low rounded-xl p-5 flex flex-col md:flex-row gap-6 items-center transition-colors hover:bg-surface-container-high border border-transparent">
+<div class="w-40 h-40 shrink-0 overflow-hidden rounded-lg bg-surface-container-lowest p-2">
+<img class="w-full h-full object-contain" data-alt="Lightweight peat moss bag for seed starting, natural brown packaging on neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD27ZHrczWUarY9-Z4nc2kNFm2DdFKj5rUoijhHJ1B8VppZS_oSYb0UrgpNyWFu23-5ZWzsCBicP_N2w8KMbHNkVAysS6OpPjVDE8O9oEm00MqDwfuw4NcJcDlxs7kn2Mn2wH0w3HjX1fsQssY0rAdSf4WdVAFaGqvdqoGwLjQXKhgWh0D4dLweiqlX-a5-U16f7I7U2OHBerZe4fG4gm2HcwjYQoW5hHYNIsKvgwQn-5bIRge59bJwgWCPzpR-rl6FE4ytcKgZY6kQ"/>
+</div>
+<div class="flex-grow">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-5 h-5 rounded-full bg-[#01285F] flex items-center justify-center text-[7px] text-white font-bold">E</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Espak &amp; Teised</span>
+</div>
+<h3 class="text-xl font-bold text-on-surface">Kekkilä Aiamuld 40L</h3>
+<p class="text-sm text-on-surface-variant">Kõrge toitainesisaldusega muld suvelilledele ja köögiviljadele.</p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-xs font-medium text-on-surface-variant block">Alates</span>
+<span class="text-2xl font-bold text-primary">€3.20</span>
+<div class="mt-3">
+<span class="text-[10px] font-bold text-secondary-container bg-secondary px-2 py-0.5 rounded uppercase">-15%</span>
+</div>
+</div>
+</div>
+<!-- Item 3: Standard Row -->
+<div class="bg-surface-container-lowest rounded-xl p-5 editorial-shadow flex flex-col md:flex-row gap-6 items-center border border-primary/5">
+<div class="w-40 h-40 shrink-0 overflow-hidden rounded-lg bg-surface-container-low p-2">
+<img class="w-full h-full object-contain" data-alt="Natural landscape mulch in large clear bag, showing dark pine bark texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8ZNO8Nd_odgaFcbsfZsINVoITaPdawyPFgtWdmJbJ5eJrTm1YjKeOKbLsrm4R9UREGMTwfFXSunge00m7TxTdUAS_ZIMt9DNQtZAitI4LXozGRVNiKLKpY6ZoScsrLQ466-hp-uUuHd6fNZTgYw3ywzZHGcmey3D4rIfEjajHpUdHNXLBolOh6SUeuCqRoNQe2upv-4gj1aED24Awv0EuAHiWnqHfrfgSo83itJo-W1lMApRjXdyvSEYOuVBvQHJHzwnnOIOg5iPH"/>
+</div>
+<div class="flex-grow">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-5 h-5 rounded-full bg-[#E2001A] flex items-center justify-center text-[7px] text-white font-bold">D</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Decora parim hind</span>
+</div>
+<h3 class="text-xl font-bold text-on-surface">Männikooremultš 50L</h3>
+<p class="text-sm text-on-surface-variant">Peenefraktsiooniline multš peenarde katmiseks ja niiskuse hoidmiseks.</p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-xs font-medium text-on-surface-variant block">Alates</span>
+<span class="text-2xl font-bold text-primary">€7.85</span>
+</div>
+</div>
+<!-- Item 4: Sale Highlight (Color shift) -->
+<div class="bg-secondary-container/30 rounded-xl p-6 flex flex-col md:flex-row gap-8 items-center border-2 border-dashed border-secondary/20">
+<div class="relative w-full md:w-56 h-56 shrink-0 overflow-hidden rounded-lg bg-white">
+<img class="w-full h-full object-contain" data-alt="Specialized cactus and succulent soil mix in a small premium pouch with green leaf print" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlDzruFd7Ohy_-aIf2IbSIg5U-SUVgfaG8RIl3eX4RMQgWr0AqniasDEdzgwoiESJkij0m4Xmgp54ZUuRqXnWLrb7H_y0N7rGGqhJFp7TJ291PwiJ-zFcl418ZEdJodCo92D6a_XneGp_1UuG1ZHkELXuTDEQTmAgqq0KKzIh11mTjLBX2FHa6Nu0azJMO-O1ti0LNg_kivJcFuzqwYIgk8vB9tDq2x4D6rQ3ZJK9vNs1Jow_U7WTyHT9vwLEy64ADXoxQXW8gTQn6"/>
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/10 to-transparent"></div>
+</div>
+<div class="flex-grow">
+<div class="inline-block bg-secondary text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4">Nädala superpakkumine</div>
+<h3 class="text-2xl font-bold text-on-surface-variant leading-tight mb-2">Compo Sana Lillemuld 20L</h3>
+<p class="text-on-surface-variant max-w-md">Kvaliteetmuld toataimedele, sisaldab perliiti paremaks õhustatuseks ja juurte kasvuks.</p>
+<div class="flex items-center gap-4 mt-6">
+<div>
+<span class="text-3xl font-bold text-secondary">€5.40</span>
+<span class="text-on-surface-variant line-through text-sm ml-2">€9.90</span>
+</div>
+<div class="h-8 w-[1px] bg-secondary/30"></div>
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Säästad 45%</span>
+</div>
+</div>
+<div class="shrink-0">
+<button class="bg-secondary text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:translate-y-[-2px] transition-all">
+                        Vaata pakkumist
+                    </button>
+</div>
+</div>
+<!-- Item 5: Standard Row -->
+<div class="bg-surface-container-low rounded-xl p-5 flex flex-col md:flex-row gap-6 items-center transition-colors hover:bg-surface-container-high border border-transparent">
+<div class="w-40 h-40 shrink-0 overflow-hidden rounded-lg bg-surface-container-lowest p-2">
+<img class="w-full h-full object-contain" data-alt="Natural white peat substrate for professional gardening, simple large industrial bag" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFWtaK3ePKmab47yWeanvdODfAUalhkv-Z4RYm6dv_PEOlQSkF5-eP9r1VOrpItOPFeGazN_Sg8kRNjxAkP-2vljvtVZwEHMbZkQz4eB-7-CnVBnV21zskMOIeIj8_Mfs1F2tLqnaI6-LoaSTwwZmwxOffePwVtYLH3W_ZlRAMLy_jvkggXVlsbR9G3EmWA8UXDGoTREBn7g0OlOatzcc8MzFHbAujbzuGC6PJg5UrNxUPqaRdBSd9EGonz1tDITZcZVNK0UXYFeJo"/>
+</div>
+<div class="flex-grow">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-5 h-5 rounded-full bg-[#009639] flex items-center justify-center text-[7px] text-white font-bold">A</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Ehituse ABC Valik</span>
+</div>
+<h3 class="text-xl font-bold text-on-surface">Kasvuturvas 100L</h3>
+<p class="text-sm text-on-surface-variant">Naturaalne happeline turvas, sobib ideaalselt rododendronitele ja mustikatele.</p>
+</div>
+<div class="text-right shrink-0">
+<span class="text-xs font-medium text-on-surface-variant block">Alates</span>
+<span class="text-2xl font-bold text-primary">€11.20</span>
+</div>
+</div>
+</div>
+<!-- Pagination (Implicit through "See More") -->
+<div class="mt-16 text-center">
+<button class="bg-surface-container-lowest border border-outline-variant text-primary font-bold px-10 py-4 rounded-xl hover:bg-primary hover:text-white transition-all editorial-shadow">
+                Lae rohkem tooteid
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-[#ffffff]/80 dark:bg-stone-900/80 backdrop-blur-xl shadow-[0_-10px_30px_rgba(21,66,18,0.05)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-3 hover:text-[#154212] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-wider mt-1">Otsi</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#2D5A27] text-white rounded-xl p-3 scale-95 duration-200 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-wider mt-1">Kategooriad</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-3 hover:text-[#154212] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-wider mt-1">Info</span>
+</a>
+</nav>
+<!-- Floating Action Button - Only for Primary Search on this screen context -->
+<div class="fixed bottom-24 right-6 z-40 hidden md:block">
+<button class="bg-primary text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</div>
+</body></html>
