@@ -1,5 +1,6 @@
 import SearchBar from "../components/SearchBar";
 import CategoryGrid from "../components/CategoryGrid";
+import DealsSection from "../components/DealsSection";
 
 export default function HomePage() {
   return (
@@ -13,6 +14,8 @@ export default function HomePage() {
       </section>
 
       <CategoryGrid />
+
+      <DealsSection />
     </div>
   );
 }

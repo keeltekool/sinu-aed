@@ -71,3 +71,23 @@ export interface Category {
   icon: string;
   searchQuery: string;
 }
+
+export interface Deal {
+  product: string;
+  brand: string;
+  size: string;
+  imageUrl: string | null;
+  chain: ChainId;
+  chainName: string;
+  chainColor: string;
+  effectivePrice: number;
+  regularPrice: number;
+  discountPercent: number;
+  productUrl: string;
+  savingsScore: number;
+}
+
+export interface DealsResponse {
+  deals: Deal[];
+  fetchedAt: string;
+}

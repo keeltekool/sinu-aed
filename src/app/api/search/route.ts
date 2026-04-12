@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchAllChains } from "../../../lib/scrapers";
 import { groupByProduct } from "../../../lib/matcher";
-import { getCachedSearch } from "../../../lib/cache";
+import { getCached } from "../../../lib/cache";
 import type { SearchResponse } from "../../../lib/types";
 
 export async function GET(request: NextRequest) {
@@ -15,20 +15,23 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await getCachedSearch(query, async () => {
-      const rawProducts = await searchAllChains(query);
-      const { comparable, singleChain } = groupByProduct(rawProducts);
-      const chainsWithResults = new Set(rawProducts.map((p) => p.chain));
+    const response = await getCached<SearchResponse>(
+      `search:${query.toLowerCase()}`,
+      async () => {
+        const rawProducts = await searchAllChains(query);
+        const { comparable, singleChain } = groupByProduct(rawProducts);
+        const chainsWithResults = new Set(rawProducts.map((p) => p.chain));
 
-      return {
-        query,
-        comparable,
-        singleChain,
-        totalProducts: comparable.length + singleChain.length,
-        totalChains: chainsWithResults.size,
-        fetchedAt: new Date().toISOString(),
-      };
-    });
+        return {
+          query,
+          comparable,
+          singleChain,
+          totalProducts: comparable.length + singleChain.length,
+          totalChains: chainsWithResults.size,
+          fetchedAt: new Date().toISOString(),
+        };
+      }
+    );
 
     return NextResponse.json(response, {
       headers: {
@@ -38,6 +41,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("Search failed:", msg, error);
-    return NextResponse.json({ error: "Search failed", detail: msg }, { status: 500 });
+    return NextResponse.json(
+      { error: "Search failed", detail: msg },
+      { status: 500 }
+    );
   }
 }
