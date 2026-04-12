@@ -25,7 +25,7 @@ interface KlevuRecord {
 export async function searchKlevu(
   config: KlevuConfig,
   query: string,
-  limit = 30
+  limit = 80
 ): Promise<RawProduct[]> {
   const body = JSON.stringify({
     context: { apiKeys: [config.apiKey] },

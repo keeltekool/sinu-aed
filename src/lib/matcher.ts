@@ -82,6 +82,9 @@ export function groupByProduct(products: RawProduct[]): {
     }
   }
 
+  // Pass 2: fuzzy merge — try to add single-chain products to multi-chain groups
+  fuzzyMerge(groups);
+
   const comparable: ProductGroup[] = [];
   const singleChain: ProductGroup[] = [];
 
@@ -165,6 +168,75 @@ function buildProductGroup(
     savingsPercent,
     chainCount: chains.length,
   };
+}
+
+// ─── Fuzzy Matching (Pass 2) ──────────────────────────────
+
+// Words too generic for fuzzy matching — would cause false positives
+const STOP_WORDS = new Set([
+  "SOLID", "CLASSIC", "PRO", "PLUS", "PREMIUM", "STANDARD",
+  "SET", "KOMPLEKT", "UUS", "NEW", "MINI", "MAXI", "GARDEN",
+  "AIA", "AIAMAA", "MUST", "MULD", "TURVAS",
+]);
+
+function fuzzyMerge(groups: Map<string, NormalizedProduct[]>): void {
+  // Find multi-chain groups and single-chain products
+  const multiChainKeys: string[] = [];
+  const singleProducts: { key: string; product: NormalizedProduct }[] = [];
+
+  for (const [key, prods] of groups) {
+    const chains = new Set(prods.map(p => p.chain));
+    if (chains.size >= 2) {
+      multiChainKeys.push(key);
+    } else if (prods.length === 1) {
+      singleProducts.push({ key, product: prods[0] });
+    }
+  }
+
+  const merged = new Set<string>();
+
+  for (const { key: singleKey, product } of singleProducts) {
+    if (!product.normalizedBrand) continue;
+
+    const words = getSignificantWords(product.name, product.normalizedBrand);
+    if (words.length < 2) continue;
+
+    for (const multiKey of multiChainKeys) {
+      // Must be same brand
+      if (!multiKey.startsWith(product.normalizedBrand + "|")) continue;
+
+      const group = groups.get(multiKey)!;
+      // Must not already have this chain
+      if (group.find(p => p.chain === product.chain)) continue;
+
+      // Check word overlap with any product in the group
+      let matched = false;
+      for (const existing of group) {
+        const existingWords = getSignificantWords(existing.name, existing.normalizedBrand);
+        const shared = words.filter(w => existingWords.includes(w));
+        if (shared.length >= 2) {
+          group.push(product);
+          merged.add(singleKey);
+          matched = true;
+          break;
+        }
+      }
+      if (matched) break;
+    }
+  }
+
+  // Remove merged single-product groups
+  for (const key of merged) {
+    groups.delete(key);
+  }
+}
+
+function getSignificantWords(name: string, brand: string): string[] {
+  return name
+    .toUpperCase()
+    .replace(new RegExp(escapeRegex(brand), "g"), "")
+    .split(/[^A-ZÄÖÜÕŠŽ0-9]+/)
+    .filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP_WORDS.has(w));
 }
 
 // ─── Helpers ───────────────────────────────────────────────

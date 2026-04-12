@@ -69,7 +69,8 @@ export interface Category {
   id: string;
   label: string;
   icon: string;
-  searchQuery: string;
+  searchQuery: string;        // primary term (URL routing, deals, free search)
+  searchTerms: string[];      // ALL terms to search when browsing this category
 }
 
 export interface Deal {

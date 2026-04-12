@@ -20,7 +20,7 @@ interface AlgoliaHit {
 
 export async function searchAlgolia(
   query: string,
-  limit = 30
+  limit = 80
 ): Promise<RawProduct[]> {
   const body = JSON.stringify({
     requests: [

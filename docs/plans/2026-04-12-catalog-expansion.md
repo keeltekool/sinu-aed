@@ -1,46 +1,45 @@
-# Catalog Expansion: 74 → 200 Comparable Products
+# Catalog Expansion: 58 → 200+ Comparable Products
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Expand from 74 to 200+ comparable products by updating categories, adding brand-based searches, increasing API limits, and improving the product matcher.
+**Goal:** Expand from 58 to 200+ comparable cross-chain products by switching to brand-first multi-term search, increasing API limits, and adding fuzzy matching for tools/equipment.
 
-**Architecture:** Three workstreams executed in sequence. (1) Update constants.ts with final 7 categories, each with multiple search terms including brand names. (2) Increase scraper API limits from 30→80. (3) Add two-pass matching — pass 1: brand+size (existing), pass 2: brand+shared-significant-words for products that fail pass 1. Update deals.ts and home page to use new categories. Verify with real comparable count before and after.
+**Architecture:** Three workstreams in sequence. (1) Data layer: new Category type with `searchTerms[]`, final 7 categories with brand names per category, expanded KNOWN_BRANDS list. (2) Scrapers: increase limits from 30→80. (3) Matching + search: two-pass matcher (exact → fuzzy word overlap), search API detects category queries and searches ALL terms. No new files — all changes in existing modules.
 
-**Tech Stack:** Existing Next.js codebase, no new dependencies.
+**Tech Stack:** Existing Next.js 16 codebase, no new dependencies.
 
----
-
-## Baseline Measurement (run BEFORE any changes)
-
-```bash
-# Save this output — it's our "before" number
-cd C:\Users\Kasutaja\Claude_Projects\hind-compare
-node -e "..." # (test script from below)
-```
-
-Use the self-contained test script at the bottom of this plan to count comparable products with current code. Expected: ~74.
+**Baseline (measured 2026-04-12):** 58 unique comparable products across 8 categories.
 
 ---
 
-### Task 1: Update categories + search terms in constants.ts
+## Task 1: Update types.ts — add `searchTerms` to Category
 
 **Files:**
-- Modify: `src/lib/constants.ts:51-80` (CATEGORIES array)
-- Modify: `src/lib/types.ts` (Category interface — add `searchTerms` field)
+- Modify: `src/lib/types.ts:68-73`
 
-**Step 1:** Add `searchTerms: string[]` to `Category` interface in types.ts:
+**Change:** Add `searchTerms: string[]` to Category interface:
 
 ```typescript
 export interface Category {
   id: string;
   label: string;
   icon: string;
-  searchQuery: string;        // primary term (used for URL routing)
-  searchTerms: string[];      // ALL terms to search (categories + brands)
+  searchQuery: string;        // primary term (URL routing, deals, free search)
+  searchTerms: string[];      // ALL terms to search when browsing this category
 }
 ```
 
-**Step 2:** Replace CATEGORIES array in constants.ts with final 7:
+**Why both fields:** `searchQuery` stays for lightweight uses (deals aggregation, URL params). `searchTerms` is the deep list used when a user taps a category tile — searches ALL brand names + synonyms to maximize cross-chain hits.
+
+---
+
+## Task 2: Update constants.ts — 7 categories + searchTerms + missing brands
+
+**Files:**
+- Modify: `src/lib/constants.ts:51-80` (CATEGORIES array)
+- Modify: `src/lib/constants.ts:82-139` (KNOWN_BRANDS array)
+
+### Step 1: Replace CATEGORIES with final 7
 
 ```typescript
 export const CATEGORIES: Category[] = [
@@ -49,21 +48,21 @@ export const CATEGORIES: Category[] = [
     label: "Mullad ja turbad",
     icon: "potted_plant",
     searchQuery: "muld",
-    searchTerms: ["muld", "turvas", "kompost", "kasvusegu", "koorekate", "biolan muld", "kekkilä", "grass muld", "matogard", "compo muld", "horticom muld", "greenworld"],
+    searchTerms: ["muld", "turvas", "kompost", "kasvusegu", "koorekate", "biolan muld", "kekkilä", "grass muld", "matogard", "compo muld", "horticom muld", "greenworld", "baltic bark"],
   },
   {
     id: "vaetised",
     label: "Väetised",
     icon: "grass",
     searchQuery: "väetis",
-    searchTerms: ["väetis", "sõnnik", "kanakaka", "lupja", "merevetikas", "baltic agro väetis", "biolan väetis", "substral", "biopon", "compo väetis", "ecofertis"],
+    searchTerms: ["väetis", "sõnnik", "kanakaka", "lupja", "baltic agro väetis", "biolan väetis", "substral", "biopon", "compo väetis", "ecofertis", "horticom väetis"],
   },
   {
     id: "muru",
     label: "Muru",
     icon: "yard",
     searchQuery: "muru",
-    searchTerms: ["muruseeme", "muruväetis", "murumuld", "murusegu", "muru", "baltic agro muru"],
+    searchTerms: ["muruseeme", "muruväetis", "murumuld", "murusegu", "muru", "baltic agro muru", "dlf muru", "substral muru"],
   },
   {
     id: "varvid",
@@ -77,14 +76,14 @@ export const CATEGORIES: Category[] = [
     label: "Aiatööriistad",
     icon: "carpenter",
     searchQuery: "aiatööriist",
-    searchTerms: ["fiskars", "gardena tööriist", "labidas", "reha", "käärid", "kirves", "saag aia", "cellfast"],
+    searchTerms: ["fiskars", "gardena", "labidas", "reha", "käärid", "kirves", "saag", "cellfast", "oksalõikur"],
   },
   {
     id: "muruhooldus",
     label: "Muruhooldus",
     icon: "agriculture",
     searchQuery: "muruniiduk",
-    searchTerms: ["muruniiduk", "trimmer", "multš", "murutrimmer", "makita trimmer", "gardena niiduk", "bosch niiduk", "ryobi", "husqvarna"],
+    searchTerms: ["muruniiduk", "trimmer", "murutrimmer", "makita trimmer", "gardena niiduk", "bosch niiduk", "ryobi", "husqvarna", "scheppach", "stiga"],
   },
   {
     id: "kastmine",
@@ -96,243 +95,241 @@ export const CATEGORIES: Category[] = [
 ];
 ```
 
-**Step 3:** Commit: `feat: update to final 7 garden categories with multi-term search`
+**Dropped from old 8:** Seemned (low comparable: 2), Lillepotid (0 comparable).
+**Added:** Muru (was missing — grass seed/lawn care is distinct from väetised).
+
+### Step 2: Add missing brands to KNOWN_BRANDS
+
+Brands from the confidence report NOT already in the list:
+
+```typescript
+// Add these to KNOWN_BRANDS array:
+"CELLFAST",     // CELL-FAST already there, but chains may use "CELLFAST"
+"DLF",          // lawn seeds
+"OKKO",         // lawn seeds
+"EESTI MURUD",  // Estonian lawn seed brand
+"STIGA",        // lawn mowers
+"ALPINA",       // paints
+"TRUPER",       // tools
+"AGROZONE",     // lawn care
+"KÄRCHER",      // watering/pressure washers
+"KARCHER",      // ASCII variant
+```
 
 ---
 
-### Task 2: Increase API limits in all scrapers
+## Task 3: Increase API limits 30→80 in all scrapers
 
 **Files:**
-- Modify: `src/lib/scrapers/klevu.ts:28` — change `limit = 30` to `limit = 80`
-- Modify: `src/lib/scrapers/algolia.ts:23` — change `limit = 30` to `limit = 80`
-- Modify: `src/lib/scrapers/bauhof.ts:15` — change `limit = 32` to `limit = 80`
+- Modify: `src/lib/scrapers/klevu.ts:28` — `limit = 30` → `limit = 80`
+- Modify: `src/lib/scrapers/algolia.ts:23` — `limit = 30` → `limit = 80`
+- Modify: `src/lib/scrapers/bauhof.ts:15` — `limit = 32` → `limit = 80`
 
-**Step 1:** In klevu.ts line 28: `limit = 30` → `limit = 80`
-**Step 2:** In algolia.ts, change `hitsPerPage=30` default to `hitsPerPage=80`
-**Step 3:** In bauhof.ts line 15: `limit = 32` → `limit = 80` (note: Bauhof may still cap at 32 due to __NUXT__ pagination, but setting higher doesn't hurt)
-
-**Step 4:** Commit: `feat: increase API limits from 30 to 80 per chain per search`
+Three one-line changes. Bauhof's __NUXT__ may still cap lower (HTML pagination), but setting higher doesn't hurt — it just won't return more than the page contains.
 
 ---
 
-### Task 3: Add two-pass matcher — significant words overlap
+## Task 4: Add fuzzyMerge two-pass matcher
 
 **Files:**
-- Modify: `src/lib/matcher.ts` — add `fuzzyMatchPass()` after primary grouping
+- Modify: `src/lib/matcher.ts`
 
-**Step 1:** After the primary `groupByProduct` loop (which creates groups by exact matchKey), add a second pass that tries to merge single-chain products with existing groups based on word overlap.
+**Problem:** Current matcher only groups by exact `brand|size` or `brand|model`. Products like "Fiskars Solid Ümbersetuslabidas" at Bauhof and "Fiskars Solid spade" at Espak don't match because size/model extraction fails.
 
-Add new function `fuzzyMerge`:
+**Solution:** After exact matching, run a second pass on single-chain products. For each single, find an existing multi-chain group with:
+1. Same brand
+2. 2+ shared significant words (4+ chars, not brand name, not pure numbers)
+3. Group doesn't already have this chain
+
+Add these functions to matcher.ts:
 
 ```typescript
 function fuzzyMerge(
-  comparable: Map<string, NormalizedProduct[]>,
-  singles: NormalizedProduct[]
+  groups: Map<string, NormalizedProduct[]>
 ): void {
+  // Separate multi-chain groups from singles
+  const multiChain = new Map<string, NormalizedProduct[]>();
+  const singles: NormalizedProduct[] = [];
+
+  for (const [key, prods] of groups) {
+    const chains = new Set(prods.map(p => p.chain));
+    if (chains.size >= 2) {
+      multiChain.set(key, prods);
+    } else {
+      singles.push(...prods);
+    }
+  }
+
   for (const product of singles) {
     if (!product.normalizedBrand) continue;
 
-    // Extract significant words (4+ chars, not numbers, not brand)
     const words = getSignificantWords(product.name, product.normalizedBrand);
     if (words.length < 2) continue;
 
-    // Try to find a matching group
-    for (const [key, group] of comparable) {
-      // Must be same brand
+    let merged = false;
+    for (const [key, group] of multiChain) {
       if (!key.startsWith(product.normalizedBrand + "|")) continue;
-      // Must not already have this chain
       if (group.find(p => p.chain === product.chain)) continue;
 
-      // Check word overlap with any product in the group
       for (const existing of group) {
         const existingWords = getSignificantWords(existing.name, existing.normalizedBrand);
         const shared = words.filter(w => existingWords.includes(w));
         if (shared.length >= 2) {
           group.push(product);
-          break;  // merged, move to next single
+          merged = true;
+          break;
         }
       }
+      if (merged) break;
+    }
+
+    // Also try to form NEW multi-chain groups from singles
+    if (!merged) {
+      // Check other singles for brand + word overlap
+      // (handled by the existing exact-match grouping — singles that share
+      //  a matchKey are already grouped. Fuzzy is only for cross-key merging.)
     }
   }
 }
+
+// Words that are common product descriptors — exclude from fuzzy matching
+const STOP_WORDS = new Set([
+  "SOLID", "CLASSIC", "PRO", "PLUS", "PREMIUM", "STANDARD",
+  "SET", "KOMPLEKT", "UUS", "NEW", "MINI", "MAXI", "GARDEN",
+]);
 
 function getSignificantWords(name: string, brand: string): string[] {
   return name
     .toUpperCase()
     .replace(new RegExp(escapeRegex(brand), "g"), "")
     .split(/[^A-ZÄÖÜÕŠŽ0-9]+/)
-    .filter(w => w.length >= 3 && !/^\d+$/.test(w));
+    .filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP_WORDS.has(w));
 }
 ```
 
-**Step 2:** Integrate into `groupByProduct`:
-- After building `groups` Map from exact matchKey
-- Collect single-chain products (groups with 1 chain)
-- Run `fuzzyMerge(multiChainGroups, singleChainProducts)`
-- Re-evaluate groups: some singles may now be in multi-chain groups
-
-**Step 3:** Commit: `feat: add two-pass matcher with word-overlap fuzzy matching`
+**Integration:** Call `fuzzyMerge(groups)` in `groupByProduct()` AFTER the exact matchKey grouping loop, BEFORE splitting into comparable/singleChain.
 
 ---
 
-### Task 4: Build catalog builder with brand-based searching
+## Task 5: Update search API — category-aware multi-term search
 
 **Files:**
-- Create: `src/lib/catalog.ts`
+- Modify: `src/app/api/search/route.ts`
 
-**Step 1:** Create `buildCatalog()` function that:
+**Current flow:** `searchAllChains(query)` → one search term → 4 chains → ~120 raw products.
 
-```typescript
-import { CATEGORIES } from "./constants";
-import { searchAllChains } from "./scrapers";
-import { groupByProduct } from "./matcher";
-import type { RawProduct, ProductGroup } from "./types";
+**New flow for category queries:**
+1. Check if `query.toLowerCase()` matches any category's `searchQuery`
+2. If yes → search ALL that category's `searchTerms` (7-13 terms × 4 chains)
+3. Deduplicate raw products by `chain + sku` (or `chain + name` if no sku)
+4. Run through matcher as before
 
-export async function buildCatalog(): Promise<{
-  comparable: ProductGroup[];
-  singleChain: ProductGroup[];
-  totalRaw: number;
-}> {
-  const allRaw: RawProduct[] = [];
+**If no category match** (free text like "biolan" or "fiskars labidas") → single term search as before.
 
-  // Search ALL terms from ALL categories
-  const allTerms = CATEGORIES.flatMap(c => c.searchTerms);
-  // Deduplicate
-  const uniqueTerms = [...new Set(allTerms)];
-
-  // Search in batches of 4 to avoid overwhelming APIs
-  for (let i = 0; i < uniqueTerms.length; i += 4) {
-    const batch = uniqueTerms.slice(i, i + 4);
-    const results = await Promise.allSettled(
-      batch.map(term => searchAllChains(term))
-    );
-    for (const r of results) {
-      if (r.status === "fulfilled") allRaw.push(...r.value);
-    }
-  }
-
-  // Deduplicate raw products by chain+sku
-  const seen = new Set<string>();
-  const deduped = allRaw.filter(p => {
-    const key = `${p.chain}:${p.sku || p.name}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  const { comparable, singleChain } = groupByProduct(deduped);
-
-  return { comparable, singleChain, totalRaw: deduped.length };
-}
-```
-
-**Step 2:** Commit: `feat: add catalog builder with brand-based multi-term search`
-
----
-
-### Task 5: Update deals.ts to use catalog builder
-
-**Files:**
-- Modify: `src/lib/deals.ts`
-
-**Step 1:** Replace the manual seed query loop with `buildCatalog()`:
-
-```typescript
-import { buildCatalog } from "./catalog";
-
-export async function aggregateDeals(): Promise<DealsResponse> {
-  const { comparable } = await buildCatalog();
-  // ... rest of deal extraction from comparable groups
-}
-```
-
-Wait — this would make deals too slow (searches ALL terms). Instead, keep deals using `CATEGORIES.map(c => c.searchQuery)` (just the primary terms, 7 queries). The catalog builder is for the full index.
-
-**Actually: no change needed to deals.ts.** It already uses `CATEGORIES.map(c => c.searchQuery)` which will automatically pick up the new 7 categories. Keep deals lightweight.
-
-**Step 2:** Commit: (skip — no changes needed)
-
----
-
-### Task 6: Update home page CategoryGrid
-
-**Files:**
-- Modify: `src/components/CategoryGrid.tsx` — already reads from CATEGORIES, should auto-update
-
-**Step 1:** Verify CategoryGrid still works with new categories. The `searchQuery` field is used for the link — user taps "Mullad ja turbad" → navigates to `/search?q=muld`. This still works.
-
-**Step 2:** The search results page fetches `/api/search?q=muld` which calls `searchAllChains("muld")`. This gives 30-80 products per chain for that ONE term. For the full catalog depth, we'd need to search ALL `searchTerms` for the category.
-
-**Important change:** Update `/api/search` to detect when query matches a category's primary `searchQuery`, and if so, search ALL that category's `searchTerms` instead of just the one query.
-
-**Modify:** `src/app/api/search/route.ts`:
+**Cache key:** `search:${query.toLowerCase()}` — same as now. Category results get cached as one blob per primary term.
 
 ```typescript
 import { CATEGORIES } from "../../../lib/constants";
 
-// Check if query matches a category — if so, use all search terms
-const category = CATEGORIES.find(c => c.searchQuery === query.toLowerCase());
+// Inside the getCached callback:
+const category = CATEGORIES.find(
+  c => c.searchQuery.toLowerCase() === query.toLowerCase()
+);
 const searchTerms = category ? category.searchTerms : [query];
 
-// Search all terms
 const allRaw: RawProduct[] = [];
-for (const term of searchTerms) {
-  const results = await searchAllChains(term);
-  allRaw.push(...results);
+// Search terms in batches of 3 to avoid overwhelming APIs
+for (let i = 0; i < searchTerms.length; i += 3) {
+  const batch = searchTerms.slice(i, i + 3);
+  const batchResults = await Promise.allSettled(
+    batch.map(term => searchAllChains(term))
+  );
+  for (const r of batchResults) {
+    if (r.status === "fulfilled") allRaw.push(...r.value);
+  }
 }
-// Deduplicate + group
+
+// Deduplicate by chain + sku (or chain + name)
+const seen = new Set<string>();
+const deduped = allRaw.filter(p => {
+  const key = `${p.chain}:${p.sku || p.name}`;
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+
+const { comparable, singleChain } = groupByProduct(deduped);
 ```
 
-**Step 3:** Commit: `feat: category searches use all search terms for deeper results`
+**Deals stays untouched.** `deals.ts` uses `CATEGORIES.map(c => c.searchQuery)` — now 7 primary terms instead of 8. Lightweight, auto-updates.
+
+**CategoryGrid stays untouched.** Reads from CATEGORIES constant, auto-renders 7 tiles instead of 8.
 
 ---
 
-### Task 7: Build + deploy + E2E verify comparable count
+## Task 6: npm run build — must pass clean
 
-**Step 1:** `npm run build` — must pass clean
+Zero TypeScript errors, zero warnings. Fix anything that breaks.
 
-**Step 2:** Run the comparable count test script BEFORE deploying to measure improvement:
+---
+
+## Task 7: Deploy + E2E verify comparable count
+
+### Step 1: Run comparable count test against local dev
 
 ```bash
-cd C:\Users\Kasutaja\Claude_Projects\hind-compare
-node test-catalog.mjs
+# Start dev server, then hit local API
+node -e "
+const queries = ['muld','väetis','muru','värv','aiatööriist','muruniiduk','kastmine'];
+async function run() {
+  let total = 0;
+  const seen = new Set();
+  for (const q of queries) {
+    const res = await fetch('http://localhost:3000/api/search?q=' + encodeURIComponent(q));
+    const data = await res.json();
+    const newComps = (data.comparable || []).filter(p => !seen.has(p.matchKey));
+    newComps.forEach(p => seen.add(p.matchKey));
+    total += newComps.length;
+    console.log(q + ': ' + (data.comparable||[]).length + ' comparable, ' + newComps.length + ' new unique');
+  }
+  console.log('TOTAL UNIQUE COMPARABLE: ' + total);
+  console.log('TARGET: 200+');
+  console.log(total >= 150 ? 'PASS' : 'NEEDS MORE WORK');
+}
+run().catch(console.error);
+"
 ```
 
-Test script (create as `test-catalog.mjs` — delete after):
+**Expected:** 150-200+ comparable. If below 150, investigate which categories underperform and add more search terms.
 
-```javascript
-// Self-contained test — hits live APIs, counts comparable products
-// Run AFTER code changes, BEFORE deploy
-// Uses the same search terms as the new CATEGORIES
-const categories = [
-  ["muld", "turvas", "kompost", "biolan muld", "kekkilä", "grass muld", "matogard", "compo muld"],
-  ["väetis", "sõnnik", "baltic agro väetis", "biolan väetis", "substral", "biopon"],
-  ["muruseeme", "muruväetis", "murumuld"],
-  ["värv", "lakk", "peitsi", "tikkurila", "eskaro", "vivacolor", "sadolin", "pinotex"],
-  ["fiskars", "gardena", "labidas", "reha", "käärid"],
-  ["muruniiduk", "trimmer", "makita trimmer", "gardena niiduk", "bosch niiduk"],
-  ["kastekann", "voolik", "gardena kastmine", "cellfast"],
-];
-// ... (search + match + count logic)
-// Expected output: "TOTAL COMPARABLE: XXX"
+### Step 2: Deploy
+
+```bash
+npx vercel --yes --prod
 ```
 
-**Step 3:** Expected results:
-- Before: 74 comparable
-- After: 150-200+ comparable
-- If below 150: investigate which categories underperform, add more brand terms
+### Step 3: Verify on live site
 
-**Step 4:** Commit all: `feat: catalog expansion — 7 categories, brand search, fuzzy matcher`
+```bash
+git push origin master
+```
 
-**Step 5:** `npx vercel --yes --prod`
+### Step 4: E2E smoke tests on live URL
 
-**Step 6:** `git push origin master`
+- Search "muld" → more comparable products than before (was 15)
+- Search "tikkurila" → cross-chain paint matches
+- Search "fiskars" → more than 3 comparable (was 3)
+- Tap "Mullad ja turbad" category → deep results with multiple brands
+- Check deals section → populated with deals from 7 categories
+- Every chain price row links to correct store page
 
-**Step 7:** E2E verification on live site:
-- Search "muld" → should show more comparable products than before
-- Search "tikkurila" → should match across chains
-- Search "fiskars" → should now show more than 3 comparable
-- Check deals section → should have more deals from broader catalog
+---
+
+## Task 8: Update STACK.md + docs
+
+- Update STACK.md: change "50-60 comparable" to actual count, update category count 8→7, note Upstash Redis IS integrated, remove "placeholder" notes for deals
+- Update continuation-prompt.md with new state
+- Update memory file if needed
 
 ---
 
@@ -340,18 +337,23 @@ const categories = [
 
 | Action | File | Change |
 |--------|------|--------|
-| Modify | `src/lib/types.ts` | Add `searchTerms: string[]` to Category |
-| Modify | `src/lib/constants.ts` | New 7 categories with multi-term search + brand names |
+| Modify | `src/lib/types.ts:68-73` | Add `searchTerms: string[]` to Category |
+| Modify | `src/lib/constants.ts:51-80` | 8→7 categories with multi-term search + brand names |
+| Modify | `src/lib/constants.ts:82-139` | Add 10 missing brands to KNOWN_BRANDS |
 | Modify | `src/lib/scrapers/klevu.ts:28` | limit 30→80 |
-| Modify | `src/lib/scrapers/algolia.ts` | hitsPerPage 30→80 |
+| Modify | `src/lib/scrapers/algolia.ts:23` | limit 30→80 |
 | Modify | `src/lib/scrapers/bauhof.ts:15` | limit 32→80 |
-| Modify | `src/lib/matcher.ts` | Add fuzzyMerge two-pass matching |
-| Modify | `src/app/api/search/route.ts` | Category-aware multi-term search |
-| Create | `src/lib/catalog.ts` | Full catalog builder (for future use) |
+| Modify | `src/lib/matcher.ts` | Add fuzzyMerge + getSignificantWords + STOP_WORDS |
+| Modify | `src/app/api/search/route.ts` | Category-aware multi-term search with dedup |
+
+**No new files.** All changes in existing modules.
 
 ## Risk Flags
 
-- **API rate limiting:** 7 categories × ~10 terms × 4 chains = ~280 API calls for full catalog build. Batch in groups of 4 to avoid hammering.
-- **Bauhof max 32 per search:** Can't increase beyond what __NUXT__ returns. Multiple search terms compensate.
-- **Fuzzy matching false positives:** "Fiskars labidas Solid" matching "Fiskars käärid Solid" because they share brand + "Solid". Mitigate by requiring 2+ shared significant words AND excluding common words like "SOLID", "CLASSIC", "PRO".
-- **Search response time:** Category searches with 10 terms × 4 chains = 40 API calls. Cache aggressively (1h TTL). First hit slow (~10s), subsequent instant.
+| Risk | Mitigation |
+|------|------------|
+| API rate limiting (70+ terms × 4 chains) | Batch in groups of 3, sequential batches |
+| Bauhof caps at ~32 per search | Multiple search terms compensate |
+| Fuzzy false positives ("Fiskars labidas Solid" ↔ "Fiskars käärid Solid") | STOP_WORDS filter, require 2+ significant shared words |
+| Category search slow (~10s first hit) | Redis 1h TTL cache, subsequent requests instant |
+| searchTerms growing unbounded | Cap at ~13 terms per category, reviewed against brand report |

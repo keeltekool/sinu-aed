@@ -12,7 +12,7 @@ import type { RawProduct } from "../types";
  */
 export async function searchBauhof(
   query: string,
-  limit = 32
+  limit = 80
 ): Promise<RawProduct[]> {
   const url = `https://www.bauhof.ee/et/search?term=${encodeURIComponent(query)}`;
 
