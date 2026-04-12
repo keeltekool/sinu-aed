@@ -73,28 +73,39 @@ function decodeNuxtProducts(html: string): RawProduct[] {
     vm[params[i]] = parseValue(vals[i]);
   }
 
-  // Extract products: title:"...",sku:"..."...price:VAR,old_price:VAR...url:"..."
+  // Extract products: title:"...",sku:"..."...price:VAR,old_price:VAR
   const products: RawProduct[] = [];
   const re =
-    /title:"([^"]+)",sku:"(\d+)"[^}]*?price:([a-zA-Z_$0-9]+),old_price:([a-zA-Z_$0-9]+)[^}]*?url:"([^"]+)"/g;
+    /title:"([^"]+)",sku:"(\d+)"[^}]*?price:([a-zA-Z_$0-9]+),old_price:([a-zA-Z_$0-9]+)/g;
   let m;
+
+  // Also extract real URL slugs from the HTML: /et/p/{SKU}/{slug}
+  const slugMap = new Map<string, string>();
+  const slugRe = /\/et\/p\/(\d+)\/([a-z0-9-]+)/g;
+  let sm;
+  while ((sm = slugRe.exec(html)) !== null) {
+    slugMap.set(sm[1], sm[2]);
+  }
 
   while ((m = re.exec(nuxt)) !== null) {
     const name = m[1].replace(/\\u002F/g, "/");
     const sku = m[2];
     const price = typeof vm[m[3]] === "number" ? (vm[m[3]] as number) : 0;
     const oldPrice = typeof vm[m[4]] === "number" ? (vm[m[4]] as number) : 0;
-    const slug = m[5].replace(/\\u002F/g, "/");
     const onSale = oldPrice > price && price > 0;
 
     if (price <= 0) continue;
 
-    // Extract image URL if present nearby
+    // Real Bauhof URL format: /et/p/{SKU}/{slug}
+    const slug = slugMap.get(sku) || name.toLowerCase().replace(/[^a-zäöüõšž0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    const productUrl = `https://www.bauhof.ee/et/p/${sku}/${slug}`;
+
+    // Image via Bauhof's IPX image proxy
     const imgMatch = nuxt
       .substring(m.index, m.index + 500)
       .match(/image_url:"([^"]+)"/);
     const imageUrl = imgMatch
-      ? `https://www.bauhof.ee/${imgMatch[1].replace(/\\u002F/g, "/")}`
+      ? `https://www.bauhof.ee/_ipx/f_webp,q_80,fit_inside,s_420x332/${imgMatch[1].replace(/\\u002F/g, "/")}`
       : null;
 
     products.push({
@@ -106,7 +117,7 @@ function decodeNuxtProducts(html: string): RawProduct[] {
       regularPrice: onSale ? oldPrice : price,
       salePrice: onSale ? price : null,
       imageUrl,
-      productUrl: `https://www.bauhof.ee/et${slug}`,
+      productUrl,
       inStock: true,
       category: "",
     });
