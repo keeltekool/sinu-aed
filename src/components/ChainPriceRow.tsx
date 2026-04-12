@@ -12,7 +12,7 @@ export default function ChainPriceRow({
       href={chain.productUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className={`flex items-center justify-between py-2.5 px-3 rounded-lg transition-colors ${
+      className={`flex items-center justify-between py-2.5 px-3 rounded-lg transition-colors group ${
         isCheapest
           ? "bg-surface-container-low"
           : "hover:bg-surface-container-low/50"
@@ -50,6 +50,9 @@ export default function ChainPriceRow({
             -{chain.discountPercent}%
           </span>
         )}
+        <span className="material-symbols-outlined text-outline text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+          open_in_new
+        </span>
       </div>
     </a>
   );

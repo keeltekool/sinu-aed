@@ -73,10 +73,10 @@ function decodeNuxtProducts(html: string): RawProduct[] {
     vm[params[i]] = parseValue(vals[i]);
   }
 
-  // Extract products: title:"...",sku:"..."...price:VAR,old_price:VAR
+  // Extract products: title:"...",sku:"..."...price:VAR,old_price:VAR...url:"..."
   const products: RawProduct[] = [];
   const re =
-    /title:"([^"]+)",sku:"(\d+)"[^}]*?price:([a-zA-Z_$0-9]+),old_price:([a-zA-Z_$0-9]+)/g;
+    /title:"([^"]+)",sku:"(\d+)"[^}]*?price:([a-zA-Z_$0-9]+),old_price:([a-zA-Z_$0-9]+)[^}]*?url:"([^"]+)"/g;
   let m;
 
   while ((m = re.exec(nuxt)) !== null) {
@@ -84,6 +84,7 @@ function decodeNuxtProducts(html: string): RawProduct[] {
     const sku = m[2];
     const price = typeof vm[m[3]] === "number" ? (vm[m[3]] as number) : 0;
     const oldPrice = typeof vm[m[4]] === "number" ? (vm[m[4]] as number) : 0;
+    const slug = m[5].replace(/\\u002F/g, "/");
     const onSale = oldPrice > price && price > 0;
 
     if (price <= 0) continue;
@@ -105,11 +106,7 @@ function decodeNuxtProducts(html: string): RawProduct[] {
       regularPrice: onSale ? oldPrice : price,
       salePrice: onSale ? price : null,
       imageUrl,
-      productUrl: `https://www.bauhof.ee/et/${name
-        .toLowerCase()
-        .replace(/[^a-zäöüõšž0-9]+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "")}`,
+      productUrl: `https://www.bauhof.ee/et${slug}`,
       inStock: true,
       category: "",
     });
