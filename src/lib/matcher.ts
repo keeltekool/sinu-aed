@@ -11,14 +11,33 @@ import { CHAINS, KNOWN_BRANDS } from "./constants";
  * This is the core matching logic — products with the same matchKey
  * across different chains are the SAME product.
  */
+// Tool/equipment brands that should match by MODEL NUMBER, not size
+const TOOL_BRANDS = new Set([
+  "FISKARS", "MAKITA", "GARDENA", "BOSCH", "RYOBI", "DEWALT",
+  "HUSQVARNA", "SCHEPPACH", "EINHELL", "HYUNDAI", "CLINT", "GUDNORD",
+  "SUNSEEKER", "ECOVACS",
+]);
+
 export function normalizeProduct(product: RawProduct): NormalizedProduct {
   const upper = product.name.toUpperCase().trim();
 
   // Extract brand (from known brand list or product.brand field)
   const brand = extractBrand(upper, product.brand);
 
-  // Extract size (e.g., 60L, 50L, 4KG, 10L)
-  const size = extractSize(upper);
+  // For tool brands: extract model number as the match identifier
+  // For garden/supply brands: extract size (volume/weight)
+  const isTool = TOOL_BRANDS.has(brand);
+  let size: string;
+  let matchKey: string;
+
+  if (isTool) {
+    const model = extractModelNumber(upper);
+    size = model || extractSize(upper);
+    matchKey = brand && (model || size) ? `${brand}|${model || size}` : "";
+  } else {
+    size = extractSize(upper);
+    matchKey = brand && size ? `${brand}|${size}` : "";
+  }
 
   // Product type = name without brand and size
   let type = upper;
@@ -29,9 +48,6 @@ export function normalizeProduct(product: RawProduct): NormalizedProduct {
     .replace(/\d+[.,]?\d*\s*(L|KG|G|ML|M3|CM|MM|TK|M)\b/gi, "")
     .replace(/\s+/g, " ")
     .trim();
-
-  // Match key: brand + size (e.g., "BIOLAN|60L")
-  const matchKey = brand && size ? `${brand}|${size}` : "";
 
   return {
     ...product,
@@ -193,6 +209,33 @@ function extractSize(upperName: string): string {
   const num = match[1].replace(",", ".");
   const unit = match[2].toUpperCase();
   return `${num}${unit}`;
+}
+
+function extractModelNumber(upperName: string): string {
+  // Tool model numbers: UPX86, DUR189Z, SW73, ARM 34, AFS 23-37, etc.
+  // Pattern: alphanumeric codes that are NOT pure numbers and NOT sizes
+  const patterns = [
+    // Fiskars models: UPX86, UP69, SW73, P541, P341, P121, L86, L31
+    /\b([A-Z]{1,3}\d{2,4}[A-Z]?)\b/,
+    // Makita models: DUR189Z, DUR368AZ, UR3000, DUR194RTX1
+    /\b(D?[A-Z]{2,3}\d{3,4}[A-Z]{0,4}\d?)\b/,
+    // Gardena models: POWERMAX 32/18V, COMFORTCUT 23/18V — use the product line name
+    /\b(POWERMAX|COMFORTCUT|EASYCUT|SMALLCUT|EASYTRIM|POWERTRIM|HANDYMOWER|POWERCUT)\s+(\d+)/,
+    // Bosch models: ARM 34, ART 27, AFS 23-37, CITYMOWER, EASYMOWER, UNIVERSALROTAK
+    /\b(ARM|ART|AFS|CITYMOWER|EASYMOWER|UNIVERSALROTAK|ADVANCEDROTAK|EASYGRASSCUT)\s*(\d*)/,
+    // Generic: CLINT CL-560CJ, GUDNORD 464
+    /\b(CL-\w+|ZERO|[A-Z]{2,}-\w+)\b/,
+  ];
+
+  for (const re of patterns) {
+    const m = upperName.match(re);
+    if (m) {
+      // Return the full match, cleaned up
+      return m[0].replace(/\s+/g, "").toUpperCase();
+    }
+  }
+
+  return "";
 }
 
 function escapeRegex(str: string): string {

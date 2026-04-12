@@ -62,6 +62,12 @@ export async function searchKlevu(
       const salePrice = parseFloat(r.salePrice) || 0;
       const onSale = salePrice > 0 && salePrice < regularPrice;
 
+      // Fix Decora Klevu "needtochange" image URLs
+      let imageUrl = r.imageUrl || r.image || null;
+      if (imageUrl) {
+        imageUrl = imageUrl.replace("/needtochange/", "/");
+      }
+
       return {
         chain: config.chainId,
         name: r.name,
@@ -70,7 +76,7 @@ export async function searchKlevu(
         ean: null,
         regularPrice,
         salePrice: onSale ? salePrice : null,
-        imageUrl: r.imageUrl || r.image || null,
+        imageUrl,
         productUrl: r.url || "",
         inStock: r.inStock !== "no",
         category: r.category || "",
