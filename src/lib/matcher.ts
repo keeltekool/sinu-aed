@@ -144,8 +144,11 @@ function buildProductGroup(
   const displayName =
     products.sort((a, b) => b.name.length - a.name.length)[0]?.name || "";
 
-  // Best image: prefer non-null
-  const imageUrl = products.find((p) => p.imageUrl)?.imageUrl || null;
+  // Best image: prefer Espak/Ehituse ABC/Decora (accessible), avoid Bauhof (CDN blocks)
+  const imageUrl =
+    products.find((p) => p.imageUrl && p.chain !== "bauhof")?.imageUrl ||
+    products.find((p) => p.imageUrl)?.imageUrl ||
+    null;
 
   return {
     matchKey,
