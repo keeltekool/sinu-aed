@@ -10,11 +10,15 @@ export default function CategoryGrid() {
         Kategooriad
       </h3>
       <div className="grid grid-cols-2 gap-3">
-        {CATEGORIES.map((cat) => (
+        {CATEGORIES.map((cat, i) => (
           <Link
             key={cat.id}
             href={`/search?q=${encodeURIComponent(cat.searchQuery)}`}
-            className="group cursor-pointer bg-surface-container-low p-5 rounded-lg hover:bg-primary-container hover:text-on-primary transition-all duration-300 flex flex-col items-center justify-center text-center gap-2"
+            className={`group cursor-pointer bg-surface-container-low p-5 rounded-lg hover:bg-primary-container hover:text-on-primary transition-all duration-300 flex flex-col items-center justify-center text-center gap-2${
+              CATEGORIES.length % 2 === 1 && i === CATEGORIES.length - 1
+                ? " col-span-2"
+                : ""
+            }`}
           >
             <span className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">
               {cat.icon}

@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// 1x1 transparent PNG — returned when chain CDN blocks the image (e.g. Bauhof 403)
+// This prevents console errors; the client onError handler shows the eco fallback icon
+const TRANSPARENT_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==",
+  "base64"
+);
+
 /**
  * Image proxy — fetches product images server-side to bypass hotlink protection.
  * Usage: /api/img?url=https://www.bauhof.ee/media/catalog/product/...
@@ -42,7 +49,13 @@ export async function GET(request: NextRequest) {
     });
 
     if (!res.ok) {
-      return new NextResponse("Image fetch failed", { status: 502 });
+      // Return 1x1 transparent PNG instead of error — prevents console 403 noise
+      return new NextResponse(TRANSPARENT_PNG, {
+        headers: {
+          "Content-Type": "image/png",
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
     }
 
     const contentType = res.headers.get("content-type") || "image/jpeg";
@@ -55,6 +68,11 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch {
-    return new NextResponse("Image proxy error", { status: 502 });
+    return new NextResponse(TRANSPARENT_PNG, {
+      headers: {
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=3600",
+      },
+    });
   }
 }
