@@ -1,13 +1,18 @@
 import type { ProductGroup } from "../lib/types";
 import ChainPriceRow from "./ChainPriceRow";
 
+function proxyImg(url: string | null): string | null {
+  if (!url) return null;
+  return `/api/img?url=${encodeURIComponent(url)}`;
+}
+
 export default function ProductCard({ group }: { group: ProductGroup }) {
   return (
     <div className="bg-surface-container-lowest rounded-lg p-4 space-y-3">
       <div className="flex items-start gap-3">
         {group.imageUrl && (
           <img
-            src={group.imageUrl}
+            src={proxyImg(group.imageUrl)!}
             alt={group.displayName}
             className="w-16 h-16 object-contain rounded-md bg-surface-container-low flex-shrink-0"
           />
