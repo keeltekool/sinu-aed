@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchAllChains } from "../../../lib/scrapers";
 import { groupByProduct } from "../../../lib/matcher";
+import { getCachedSearch } from "../../../lib/cache";
 import type { SearchResponse } from "../../../lib/types";
 
 export async function GET(request: NextRequest) {
@@ -14,23 +15,20 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Search all 4 chains in parallel
-    const rawProducts = await searchAllChains(query);
+    const response = await getCachedSearch(query, async () => {
+      const rawProducts = await searchAllChains(query);
+      const { comparable, singleChain } = groupByProduct(rawProducts);
+      const chainsWithResults = new Set(rawProducts.map((p) => p.chain));
 
-    // Group by product (brand + size matching)
-    const { comparable, singleChain } = groupByProduct(rawProducts);
-
-    // Count unique chains that returned results
-    const chainsWithResults = new Set(rawProducts.map((p) => p.chain));
-
-    const response: SearchResponse = {
-      query,
-      comparable,
-      singleChain,
-      totalProducts: comparable.length + singleChain.length,
-      totalChains: chainsWithResults.size,
-      fetchedAt: new Date().toISOString(),
-    };
+      return {
+        query,
+        comparable,
+        singleChain,
+        totalProducts: comparable.length + singleChain.length,
+        totalChains: chainsWithResults.size,
+        fetchedAt: new Date().toISOString(),
+      };
+    });
 
     return NextResponse.json(response, {
       headers: {
@@ -39,9 +37,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Search failed:", error);
-    return NextResponse.json(
-      { error: "Search failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Search failed" }, { status: 500 });
   }
 }
