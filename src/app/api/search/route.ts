@@ -36,7 +36,8 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Search failed:", error);
-    return NextResponse.json({ error: "Search failed" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Search failed:", msg, error);
+    return NextResponse.json({ error: "Search failed", detail: msg }, { status: 500 });
   }
 }
