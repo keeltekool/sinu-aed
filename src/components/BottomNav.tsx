@@ -5,30 +5,35 @@ import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
   { href: "/", icon: "search", label: "Otsi" },
-  { href: "/categories", icon: "grid_view", label: "Kategooriad" },
-  { href: "/info", icon: "info", label: "Info" },
+  { href: "/search?q=muld", icon: "potted_plant", label: "Mullad" },
+  { href: "/search?q=väetis", icon: "grass", label: "Väetised" },
+  { href: "/search?q=värv", icon: "format_paint", label: "Värvid" },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl rounded-t-2xl md:hidden">
-      <div className="flex justify-around items-center px-6 pb-8 pt-4">
+    <nav className="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl rounded-t-2xl">
+      <div className="flex justify-around items-center px-4 pb-6 pt-3 max-w-2xl mx-auto">
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive =
+            pathname === item.href ||
+            (item.href !== "/" && pathname?.startsWith("/search") && item.href.includes(new URLSearchParams(item.href.split("?")[1]).get("q") || "___"));
           return (
             <Link
               key={item.href}
               href={item.href}
               className={
                 isActive
-                  ? "flex flex-col items-center justify-center bg-primary-container text-on-primary rounded-xl p-3"
-                  : "flex flex-col items-center justify-center text-outline p-3"
+                  ? "flex flex-col items-center justify-center bg-primary-container text-on-primary rounded-xl p-2.5"
+                  : "flex flex-col items-center justify-center text-outline p-2.5 hover:text-primary transition-colors"
               }
             >
-              <span className="material-symbols-outlined">{item.icon}</span>
-              <span className="text-[10px] font-medium uppercase tracking-wider mt-1">
+              <span className="material-symbols-outlined text-xl">
+                {item.icon}
+              </span>
+              <span className="text-[9px] font-medium uppercase tracking-wider mt-0.5">
                 {item.label}
               </span>
             </Link>
