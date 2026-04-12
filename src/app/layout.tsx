@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "../components/Header";
-import BottomNav from "../components/BottomNav";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-headline",
@@ -35,10 +34,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-surface text-on-surface pb-24">
+      <body className="min-h-screen bg-surface text-on-surface">
         <Header />
-        <main className="max-w-2xl mx-auto px-6">{children}</main>
-        <BottomNav />
+        <main className="max-w-2xl mx-auto px-6 pb-12">{children}</main>
       </body>
     </html>
   );
