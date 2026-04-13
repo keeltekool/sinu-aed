@@ -33,6 +33,7 @@ const TIER2_BRANDS = [
 // TIER 3: Niche but present
 const TIER3_BRANDS = [
   "kärcher", "dlf", "okko", "eesti murud", "ecofertis", "agrozone",
+  "mustang", "stoveman",
 ];
 
 const ALL_BRANDS = [...TIER1_BRANDS, ...TIER2_BRANDS, ...TIER3_BRANDS];
@@ -46,6 +47,7 @@ const CATEGORY_TERMS = [
   "labidas", "reha", "käärid", "kirves",
   "muruniiduk", "trimmer",
   "kastekann", "voolik",
+  "grillsüsi", "grillbrikett", "grillrest", "grill",
 ];
 
 const ALL_SEARCH_TERMS = [...ALL_BRANDS, ...CATEGORY_TERMS];
@@ -53,6 +55,7 @@ const ALL_SEARCH_TERMS = [...ALL_BRANDS, ...CATEGORY_TERMS];
 // Category assignment: keyword → category ID
 // Order matters: most specific first to avoid mis-assignment
 const CATEGORY_RULES: { id: string; keywords: string[] }[] = [
+  { id: "grill", keywords: ["grill", "süsi", "brikett", "söegrill", "gaasigrill", "grillrest", "süütevedelik", "grillvõre"] },
   { id: "muruhooldus", keywords: ["muruniiduk", "trimmer", "robotniiduk", "murutrimmer", "niiduk"] },
   { id: "muru", keywords: ["muruseeme", "murusegu", "murumaa", "murukasvatus", "seemne", "muruväetis", "murumuld", "muru seeme"] },
   { id: "kastmine", keywords: ["kastekann", "voolik", "pihust", "sprinkler", "kastmissüsteem", "tilkkastmine"] },
@@ -272,6 +275,8 @@ function assignCategory(group: ProductGroup): string | null {
     "KÄRCHER": "kastmine",
     KARCHER: "kastmine",
     PROSPERPLAST: "kastmine",
+    MUSTANG: "grill",
+    STOVEMAN: "grill",
   };
 
   const mapped = brandCategoryMap[brand];

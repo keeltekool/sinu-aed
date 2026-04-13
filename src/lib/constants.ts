@@ -98,6 +98,13 @@ export const CATEGORIES: Category[] = [
     searchQuery: "kastekann",
     searchTerms: ["kastekann", "voolik", "pihust", "kastmis", "gardena kastmine", "cellfast voolik", "sprinkler"],
   },
+  {
+    id: "grill",
+    label: "Grilltarvikud",
+    icon: "outdoor_grill",
+    searchQuery: "grillsüsi",
+    searchTerms: ["grillsüsi", "grillbrikett", "grilltarvikud", "grillrest", "süütevedelik", "mustang grill", "stoveman"],
+  },
 ];
 
 // Known brands for product normalization (uppercase)
@@ -167,4 +174,6 @@ export const KNOWN_BRANDS = [
   "AGROZONE",
   "KÄRCHER",
   "KARCHER",
+  "MUSTANG",
+  "STOVEMAN",
 ];
