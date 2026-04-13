@@ -3,6 +3,8 @@ import { CATEGORIES, CHAINS } from "./constants";
 import { Redis } from "@upstash/redis";
 
 const MAX_DEALS = 20;
+const MAX_DISCOUNT_PERCENT = 75; // Anything above 75% is almost certainly bad data
+const MAX_PRICE_RATIO = 3; // Cross-chain spread: most expensive can't be >3x cheapest
 
 /**
  * Aggregate deals from the pre-built catalog.
@@ -26,6 +28,7 @@ export async function aggregateDeals(): Promise<DealsResponse> {
       if (
         chain.discountPercent &&
         chain.discountPercent >= 10 &&
+        chain.discountPercent <= MAX_DISCOUNT_PERCENT &&
         chain.salePrice &&
         chain.salePrice < chain.regularPrice
       ) {
@@ -52,7 +55,8 @@ export async function aggregateDeals(): Promise<DealsResponse> {
     }
 
     // Source 2: Cross-chain price spread
-    if (group.priceSpread >= 0.5 && group.savingsPercent >= 10) {
+    const priceRatio = group.mostExpensivePrice / group.cheapestPrice;
+    if (group.priceSpread >= 0.5 && group.savingsPercent >= 10 && priceRatio <= MAX_PRICE_RATIO) {
       const cheapest = group.chains[0];
       const key = `spread:${group.matchKey}`;
       const score = computeSpreadScore(group.savingsPercent, group.chainCount, group.priceSpread);

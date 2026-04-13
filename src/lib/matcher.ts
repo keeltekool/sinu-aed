@@ -36,7 +36,10 @@ export function normalizeProduct(product: RawProduct): NormalizedProduct {
     matchKey = brand && (model || size) ? `${brand}|${model || size}` : "";
   } else {
     size = extractSize(upper);
-    matchKey = brand && size ? `${brand}|${size}` : "";
+    // Include first product-type keyword in matchKey to prevent false matches
+    // e.g. KEKKILÄ|MURUVÄETIS|10L vs KEKKILÄ|KASVUTURVAS|10L
+    const typeWord = extractProductType(upper, brand);
+    matchKey = brand && size ? `${brand}|${typeWord ? typeWord + "|" : ""}${size}` : "";
   }
 
   // Product type = name without brand and size
@@ -91,6 +94,9 @@ export function groupByProduct(products: RawProduct[]): {
   for (const [matchKey, prods] of groups) {
     const group = buildProductGroup(matchKey, prods);
     if (group.chainCount >= 2) {
+      // Price sanity filter: if most expensive is >3x cheapest, it's a false match
+      const ratio = group.mostExpensivePrice / group.cheapestPrice;
+      if (ratio > 3) continue; // skip false matches
       comparable.push(group);
     } else {
       singleChain.push(group);
@@ -240,6 +246,46 @@ function getSignificantWords(name: string, brand: string): string[] {
 }
 
 // ─── Helpers ───────────────────────────────────────────────
+
+// Product-type keywords that distinguish different products from the same brand+size
+// e.g. "Biolan AIAMAA must muld 60L" vs "Biolan MUSTIKAMULD 50L"
+const TYPE_KEYWORDS = [
+  // Mullad
+  "AIAMAA", "MUSTIKA", "KURGI", "TOMATI", "KASVUTURVAS", "LILLEMULD", "MURUMULD",
+  "PIKEERIMIS", "KÜLVI", "KÖÖGIVILJA", "ROOSI", "RODO", "TURVAS",
+  // Väetised
+  "MURUVÄETIS", "AIAVÄETIS", "KEVADVÄETIS", "SÜGISVÄETIS", "UNIVERSAAL",
+  "KANAKAKA", "LUBI", "LUPJA",
+  // Värvid
+  "SEINAVÄRV", "FASSAADIVÄRV", "PUIDUVÄRV", "EMAILVÄRV", "LAKK",
+  "KRUNT", "PEITSI", "IMMUTUS", "AKRIT", "HARMONY", "BINDO", "ULTRA",
+  // Grill
+  "GRILLSÜSI", "BRIKETT", "GRILLREST",
+  // Generic product types
+  "KOMPOST", "KOOREKATE", "MULTŠ",
+];
+
+function extractProductType(upperName: string, brand: string): string {
+  // Remove brand from name to avoid matching brand name as type
+  let name = upperName;
+  if (brand) {
+    name = name.replace(new RegExp(escapeRegex(brand), "g"), "").trim();
+  }
+
+  // Find first matching type keyword
+  for (const keyword of TYPE_KEYWORDS) {
+    if (name.includes(keyword)) {
+      return keyword;
+    }
+  }
+
+  // Fallback: extract first word (3+ chars, not a number) as the type identifier
+  const words = name
+    .split(/[^A-ZÄÖÜÕŠŽ]+/)
+    .filter((w) => w.length >= 4 && !/^\d+$/.test(w));
+
+  return words[0] || "";
+}
 
 function extractBrand(upperName: string, rawBrand: string): string {
   // First try the raw brand field
