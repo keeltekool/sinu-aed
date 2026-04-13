@@ -25,15 +25,23 @@ export default function WatchlistSection() {
         return res.json();
       })
       .then((data) => {
-        // Preserve user's order (most recently added first)
-        const productMap = new Map<string, ProductGroup>();
-        for (const p of data.products || []) {
-          productMap.set(p.matchKey, p);
-        }
+        // API returns products — order them by user's watchlist order
+        // Products may have NEW matchKeys (BRAND|TYPE|SIZE) while localStorage
+        // has OLD keys (BRAND|SIZE), so match flexibly
+        const apiProducts: ProductGroup[] = data.products || [];
 
         const ordered: ProductGroup[] = [];
         for (const item of watchlist) {
-          const product = productMap.get(item.matchKey);
+          // Try exact match first, then partial (old format compatibility)
+          let product = apiProducts.find((p) => p.matchKey === item.matchKey);
+          if (!product) {
+            const parts = item.matchKey.split("|");
+            if (parts.length === 2) {
+              product = apiProducts.find(
+                (p) => p.matchKey.startsWith(parts[0] + "|") && p.matchKey.endsWith("|" + parts[1])
+              );
+            }
+          }
           if (product) {
             ordered.push(product);
           }
