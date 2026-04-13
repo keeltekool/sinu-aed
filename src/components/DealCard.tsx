@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Deal } from "../lib/types";
 
 function proxyImg(url: string | null): string | null {
@@ -12,11 +13,14 @@ export default function DealCard({ deal }: { deal: Deal }) {
   const [imgFailed, setImgFailed] = useState(false);
   const imgSrc = proxyImg(deal.imageUrl);
 
+  // Link to search results showing cross-chain comparison for this product
+  const searchQuery = deal.brand
+    ? `${deal.brand.toLowerCase()} ${deal.size?.toLowerCase() || ""}`.trim()
+    : deal.product;
+
   return (
-    <a
-      href={deal.productUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      href={`/search?q=${encodeURIComponent(searchQuery)}`}
       className="flex-none w-64 bg-surface-container-lowest rounded-lg overflow-hidden group"
     >
       {/* Image */}
@@ -67,6 +71,6 @@ export default function DealCard({ deal }: { deal: Deal }) {
           </span>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
