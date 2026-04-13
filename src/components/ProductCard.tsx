@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { ProductGroup } from "../lib/types";
+import { useWatchlist } from "../lib/watchlist";
 import ChainPriceRow from "./ChainPriceRow";
 
 function proxyImg(url: string | null): string | null {
@@ -34,9 +35,35 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
 
 export default function ProductCard({ group }: { group: ProductGroup }) {
   const imgSrc = proxyImg(group.imageUrl);
+  const { isWatched, add, remove } = useWatchlist();
+  const watched = isWatched(group.matchKey);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const toggleHeart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (watched) {
+        remove(group.matchKey);
+        setToast("Eemaldatud lemmikutest");
+      } else {
+        add(group.matchKey, group.displayName);
+        setToast("Lisatud lemmikutesse");
+      }
+      setTimeout(() => setToast(null), 2000);
+    },
+    [watched, group.matchKey, group.displayName, add, remove]
+  );
 
   return (
-    <div className="bg-surface-container-lowest rounded-lg p-4 space-y-3">
+    <div className="bg-surface-container-lowest rounded-lg p-4 space-y-3 relative">
+      {/* Toast notification */}
+      {toast && (
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-xs font-medium px-3 py-1.5 rounded-full z-10 animate-fade-in whitespace-nowrap">
+          {toast}
+        </div>
+      )}
+
       <div className="flex items-start gap-3">
         {imgSrc ? (
           <ProductImage src={imgSrc} alt={group.displayName} />
@@ -47,7 +74,7 @@ export default function ProductCard({ group }: { group: ProductGroup }) {
             </span>
           </div>
         )}
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-[10px] font-medium uppercase tracking-wider text-on-surface-variant">
             {group.brand}
           </p>
@@ -58,6 +85,22 @@ export default function ProductCard({ group }: { group: ProductGroup }) {
             <span className="text-xs text-outline">{group.size}</span>
           )}
         </div>
+
+        {/* Heart button */}
+        <button
+          onClick={toggleHeart}
+          className="flex-shrink-0 p-1 -mr-1 -mt-1 transition-transform active:scale-125"
+          aria-label={watched ? "Eemalda lemmikutest" : "Lisa lemmikutesse"}
+        >
+          <span
+            className={`material-symbols-outlined text-xl transition-colors ${
+              watched ? "text-primary" : "text-outline"
+            }`}
+            style={watched ? { fontVariationSettings: "'FILL' 1" } : undefined}
+          >
+            favorite
+          </span>
+        </button>
       </div>
 
       <div className="space-y-1">

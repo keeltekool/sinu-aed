@@ -1,5 +1,6 @@
 import SearchBar from "../components/SearchBar";
 import CategoryGrid from "../components/CategoryGrid";
+import WatchlistSection from "../components/WatchlistSection";
 import DealsSection from "../components/DealsSection";
 
 export default function HomePage() {
@@ -14,6 +15,8 @@ export default function HomePage() {
       </section>
 
       <CategoryGrid />
+
+      <WatchlistSection />
 
       <DealsSection />
     </div>
