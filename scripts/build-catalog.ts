@@ -33,7 +33,7 @@ const TIER2_BRANDS = [
 // TIER 3: Niche but present
 const TIER3_BRANDS = [
   "kärcher", "dlf", "okko", "eesti murud", "ecofertis", "agrozone",
-  "mustang", "stoveman",
+  "mustang", "stoveman", "grillep", "dreamfire", "proflame",
 ];
 
 const ALL_BRANDS = [...TIER1_BRANDS, ...TIER2_BRANDS, ...TIER3_BRANDS];
@@ -277,6 +277,9 @@ function assignCategory(group: ProductGroup): string | null {
     PROSPERPLAST: "kastmine",
     MUSTANG: "grill",
     STOVEMAN: "grill",
+    GRILLEP: "grill",
+    DREAMFIRE: "grill",
+    PROFLAME: "grill",
   };
 
   const mapped = brandCategoryMap[brand];

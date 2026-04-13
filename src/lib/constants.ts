@@ -176,4 +176,7 @@ export const KNOWN_BRANDS = [
   "KARCHER",
   "MUSTANG",
   "STOVEMAN",
+  "GRILLEP",
+  "DREAMFIRE",
+  "PROFLAME",
 ];
