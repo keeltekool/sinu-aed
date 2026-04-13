@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import SearchBar from "../../components/SearchBar";
 import ProductCard from "../../components/ProductCard";
+import { CATEGORIES } from "../../lib/constants";
 import type { SearchResponse, ProductGroup } from "../../lib/types";
 
 function SearchResults() {
@@ -12,6 +13,11 @@ function SearchResults() {
   const [data, setData] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Show category label in header if query matches a category
+  const matchedCategory = CATEGORIES.find(
+    (c) => c.searchQuery.toLowerCase() === query.toLowerCase()
+  );
 
   useEffect(() => {
     if (!query || query.length < 2) return;
@@ -48,6 +54,12 @@ function SearchResults() {
   return (
     <div className="pt-6 space-y-6">
       <SearchBar initialQuery={query} />
+
+      {matchedCategory && (
+        <h2 className="headline font-semibold text-2xl text-primary">
+          {matchedCategory.label}
+        </h2>
+      )}
 
       {loading && (
         <div className="space-y-4">

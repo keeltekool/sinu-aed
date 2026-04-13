@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { searchAllChains } from "../../../lib/scrapers";
 import { groupByProduct } from "../../../lib/matcher";
 import { getCached } from "../../../lib/cache";
-import { CATEGORIES } from "../../../lib/constants";
-import type { SearchResponse, RawProduct } from "../../../lib/types";
+import type { SearchResponse } from "../../../lib/types";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q")?.trim();
@@ -19,36 +18,9 @@ export async function GET(request: NextRequest) {
     const response = await getCached<SearchResponse>(
       `search:${query.toLowerCase()}`,
       async () => {
-        // Check if query matches a category — if so, search ALL its terms
-        const category = CATEGORIES.find(
-          (c) => c.searchQuery.toLowerCase() === query.toLowerCase()
-        );
-        const searchTerms = category ? category.searchTerms : [query];
-
-        const allRaw: RawProduct[] = [];
-
-        // Search terms in batches of 3 to avoid overwhelming APIs
-        for (let i = 0; i < searchTerms.length; i += 3) {
-          const batch = searchTerms.slice(i, i + 3);
-          const batchResults = await Promise.allSettled(
-            batch.map((term) => searchAllChains(term))
-          );
-          for (const r of batchResults) {
-            if (r.status === "fulfilled") allRaw.push(...r.value);
-          }
-        }
-
-        // Deduplicate by chain + sku (or chain + name if no sku)
-        const seen = new Set<string>();
-        const deduped = allRaw.filter((p) => {
-          const key = `${p.chain}:${p.sku || p.name}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-
-        const { comparable, singleChain } = groupByProduct(deduped);
-        const chainsWithResults = new Set(deduped.map((p) => p.chain));
+        const rawProducts = await searchAllChains(query);
+        const { comparable, singleChain } = groupByProduct(rawProducts);
+        const chainsWithResults = new Set(rawProducts.map((p) => p.chain));
 
         return {
           query,

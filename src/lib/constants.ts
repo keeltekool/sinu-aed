@@ -67,7 +67,7 @@ export const CATEGORIES: Category[] = [
     id: "muru",
     label: "Muru",
     icon: "yard",
-    searchQuery: "muru",
+    searchQuery: "muruseeme",
     searchTerms: ["muruseeme", "muruväetis", "murumuld", "murusegu", "muru", "baltic agro muru", "dlf muru", "substral muru"],
   },
   {
@@ -81,7 +81,7 @@ export const CATEGORIES: Category[] = [
     id: "tooristad",
     label: "Aiatööriistad",
     icon: "carpenter",
-    searchQuery: "aiatööriist",
+    searchQuery: "fiskars",
     searchTerms: ["fiskars", "gardena", "labidas", "reha", "käärid", "kirves", "saag", "cellfast", "oksalõikur"],
   },
   {
@@ -95,7 +95,7 @@ export const CATEGORIES: Category[] = [
     id: "kastmine",
     label: "Kastmistarvikud",
     icon: "water_drop",
-    searchQuery: "kastmine",
+    searchQuery: "kastekann",
     searchTerms: ["kastekann", "voolik", "pihust", "kastmis", "gardena kastmine", "cellfast voolik", "sprinkler"],
   },
 ];
