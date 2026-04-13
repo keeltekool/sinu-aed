@@ -1,0 +1,28 @@
+name: Build Product Catalog
+
+on:
+  schedule:
+    # Twice a week: Monday and Thursday at 06:00 Estonian time (03:00 UTC)
+    - cron: '0 3 * * 1,4'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+jobs:
+  build-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build product catalog
+        env:
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+        run: npx tsx scripts/build-catalog.ts
