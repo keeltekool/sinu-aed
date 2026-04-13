@@ -44,12 +44,25 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Find requested products
+    // Find requested products — supports both old (BRAND|SIZE) and new (BRAND|TYPE|SIZE) matchKeys
     const found: ProductGroup[] = [];
     const missing: string[] = [];
 
     for (const key of requestedKeys) {
-      const product = allProducts.find((p) => p.matchKey === key);
+      // Exact match first
+      let product = allProducts.find((p) => p.matchKey === key);
+
+      // Fallback: old-format key (BRAND|SIZE) matches new-format (BRAND|...|SIZE)
+      if (!product) {
+        const parts = key.split("|");
+        if (parts.length === 2) {
+          const [brand, size] = parts;
+          product = allProducts.find(
+            (p) => p.matchKey.startsWith(brand + "|") && p.matchKey.endsWith("|" + size)
+          );
+        }
+      }
+
       if (product) {
         found.push(product);
       } else {
