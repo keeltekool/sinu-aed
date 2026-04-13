@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchAllChains } from "../../../lib/scrapers";
 import { groupByProduct } from "../../../lib/matcher";
-import { getCached, getCatalog } from "../../../lib/cache";
+import { getCached, getCatalog, searchCatalog } from "../../../lib/cache";
 import { CATEGORIES } from "../../../lib/constants";
-import type { SearchResponse } from "../../../lib/types";
+import type { SearchResponse, ProductGroup } from "../../../lib/types";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q")?.trim();
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Check if query matches a category — if so, try pre-built catalog first
+    // 1. Check if query matches a category — serve full catalog
     const category = CATEGORIES.find(
       (c) => c.searchQuery.toLowerCase() === query.toLowerCase()
     );
@@ -24,15 +24,34 @@ export async function GET(request: NextRequest) {
     if (category) {
       const catalogData = await getCatalog(category.id);
       if (catalogData) {
-        return NextResponse.json(catalogData, {
-          headers: {
-            "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
-          },
-        });
+        return jsonResponse(catalogData);
       }
     }
 
-    // Fallback: live search (for free-text queries or when catalog is empty)
+    // 2. Search the catalog by keyword (brand, product name)
+    const categoryIds = CATEGORIES.map((c) => c.id);
+    const catalogMatches = await searchCatalog(query, categoryIds);
+
+    if (catalogMatches.length > 0) {
+      // Sort: most chains first, then by price spread
+      catalogMatches.sort((a, b) => {
+        if (b.chainCount !== a.chainCount) return b.chainCount - a.chainCount;
+        return b.priceSpread - a.priceSpread;
+      });
+
+      const response: SearchResponse = {
+        query,
+        comparable: catalogMatches,
+        singleChain: [],
+        totalProducts: catalogMatches.length,
+        totalChains: 4,
+        fetchedAt: new Date().toISOString(),
+      };
+
+      return jsonResponse(response);
+    }
+
+    // 3. Fallback: live search for queries not in catalog
     const response = await getCached<SearchResponse>(
       `search:${query.toLowerCase()}`,
       async () => {
@@ -51,11 +70,7 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    return NextResponse.json(response, {
-      headers: {
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
-      },
-    });
+    return jsonResponse(response);
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("Search failed:", msg, error);
@@ -64,4 +79,12 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function jsonResponse(data: SearchResponse) {
+  return NextResponse.json(data, {
+    headers: {
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+    },
+  });
 }

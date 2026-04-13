@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis";
-import type { SearchResponse } from "./types";
+import type { SearchResponse, ProductGroup } from "./types";
 
 const DEFAULT_TTL = 3600; // 1 hour
 
@@ -71,5 +71,43 @@ export async function getCatalog(categoryId: string): Promise<SearchResponse | n
     return await r.get<SearchResponse>(`catalog:${categoryId}`);
   } catch {
     return null;
+  }
+}
+
+/**
+ * Search ALL catalog categories for products matching a keyword.
+ * Scans brand + displayName for the query string.
+ */
+export async function searchCatalog(
+  query: string,
+  categoryIds: string[]
+): Promise<ProductGroup[]> {
+  const r = getRedis();
+  if (!r) return [];
+
+  const upper = query.toUpperCase();
+
+  try {
+    const results = await Promise.allSettled(
+      categoryIds.map((id) => r.get<SearchResponse>(`catalog:${id}`))
+    );
+
+    const matches: ProductGroup[] = [];
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value?.comparable) continue;
+      for (const product of result.value.comparable) {
+        if (
+          product.brand.toUpperCase().includes(upper) ||
+          product.displayName.toUpperCase().includes(upper) ||
+          product.matchKey.toUpperCase().includes(upper)
+        ) {
+          matches.push(product);
+        }
+      }
+    }
+
+    return matches;
+  } catch {
+    return [];
   }
 }
