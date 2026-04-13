@@ -1,108 +1,92 @@
-import type { Deal, DealsResponse, RawProduct } from "./types";
+import type { Deal, DealsResponse, ProductGroup, SearchResponse } from "./types";
 import { CATEGORIES, CHAINS } from "./constants";
-import { searchAllChains } from "./scrapers";
-import { groupByProduct, normalizeProduct } from "./matcher";
+import { Redis } from "@upstash/redis";
 
-const MIN_DISCOUNT_PERCENT = 10;
-const MIN_SPREAD_PERCENT = 15;
-const MIN_SPREAD_EUR = 1.0;
-const MAX_DEALS = 10;
+const MAX_DEALS = 20;
 
 /**
- * Aggregate deals from all categories across all chains.
- * Two sources:
- * 1. Allahindlus — chain-reported discounts (salePrice < regularPrice)
- * 2. Parim hind — cross-chain price spread (same product, big price difference)
+ * Aggregate deals from the pre-built catalog.
+ * Two deal types:
+ * 1. Chain discount — salePrice reported by chain (the -27% badges)
+ * 2. Cross-chain spread — same product, cheapest vs most expensive
+ *
+ * Prioritizes products at 3-4 chains (most popular = most useful to users).
  */
 export async function aggregateDeals(): Promise<DealsResponse> {
-  const seedQueries = CATEGORIES.map((c) => c.searchQuery);
-
-  // Search all categories in parallel
-  const allProducts: RawProduct[] = [];
-  const searchResults = await Promise.allSettled(
-    seedQueries.map((q) => searchAllChains(q))
-  );
-
-  for (const result of searchResults) {
-    if (result.status === "fulfilled") {
-      allProducts.push(...result.value);
-    }
-  }
+  // Load all catalog categories from Redis
+  const allProducts = await loadCatalogProducts();
 
   const deals = new Map<string, Deal>();
 
-  // Source 1: Allahindlus — chain-reported discounts
-  for (const p of allProducts) {
-    if (!p.salePrice || p.salePrice >= p.regularPrice || p.regularPrice <= 0)
-      continue;
-
-    const discountPercent = Math.round(
-      (1 - p.salePrice / p.regularPrice) * 100
-    );
-    if (discountPercent < MIN_DISCOUNT_PERCENT) continue;
-
-    const normalized = normalizeProduct(p);
-    if (!normalized.matchKey) continue;
-
-    const key = normalized.matchKey;
-    const existing = deals.get(key);
-
-    // Keep the better deal if duplicate
-    if (existing && existing.savingsScore >= discountPercent) continue;
-
-    deals.set(key, {
-      product: formatName(p.name),
-      brand: normalized.normalizedBrand,
-      size: normalized.normalizedSize,
-      imageUrl: p.chain !== "bauhof" ? p.imageUrl : null, // skip Bauhof images (CDN blocks)
-      chain: p.chain,
-      chainName: CHAINS[p.chain].name,
-      chainColor: CHAINS[p.chain].color,
-      effectivePrice: p.salePrice,
-      regularPrice: p.regularPrice,
-      discountPercent,
-      productUrl: p.productUrl,
-      savingsScore: discountPercent,
-    });
-  }
-
-  // Source 2: Parim hind — cross-chain price spread
-  const { comparable } = groupByProduct(allProducts);
-
-  for (const group of comparable) {
+  for (const group of allProducts) {
     if (group.chainCount < 2) continue;
-    if (group.priceSpread < MIN_SPREAD_EUR) continue;
-    if (group.savingsPercent < MIN_SPREAD_PERCENT) continue;
 
-    const key = group.matchKey;
-    const existing = deals.get(key);
+    // Source 1: Chain-reported discounts within this product group
+    for (const chain of group.chains) {
+      if (
+        chain.discountPercent &&
+        chain.discountPercent >= 10 &&
+        chain.salePrice &&
+        chain.salePrice < chain.regularPrice
+      ) {
+        const key = `discount:${group.matchKey}:${chain.chain}`;
+        const score = computeDiscountScore(chain.discountPercent, group.chainCount);
 
-    // Keep whichever source gives higher savings score
-    if (existing && existing.savingsScore >= group.savingsPercent) continue;
+        if (!deals.has(key) || deals.get(key)!.savingsScore < score) {
+          deals.set(key, {
+            product: group.displayName,
+            brand: group.brand,
+            size: group.size,
+            imageUrl: group.imageUrl,
+            chain: chain.chain,
+            chainName: chain.chainName,
+            chainColor: chain.chainColor,
+            effectivePrice: chain.salePrice,
+            regularPrice: chain.regularPrice,
+            discountPercent: chain.discountPercent,
+            productUrl: chain.productUrl,
+            savingsScore: score,
+          });
+        }
+      }
+    }
 
-    const cheapest = group.chains[0];
+    // Source 2: Cross-chain price spread
+    if (group.priceSpread >= 0.5 && group.savingsPercent >= 10) {
+      const cheapest = group.chains[0];
+      const key = `spread:${group.matchKey}`;
+      const score = computeSpreadScore(group.savingsPercent, group.chainCount, group.priceSpread);
 
-    // Find best image (non-Bauhof preferred)
-    const imageUrl = group.imageUrl;
-
-    deals.set(key, {
-      product: group.displayName,
-      brand: group.brand,
-      size: group.size,
-      imageUrl,
-      chain: cheapest.chain,
-      chainName: cheapest.chainName,
-      chainColor: cheapest.chainColor,
-      effectivePrice: cheapest.effectivePrice,
-      regularPrice: group.mostExpensivePrice,
-      discountPercent: group.savingsPercent,
-      productUrl: cheapest.productUrl,
-      savingsScore: group.savingsPercent,
-    });
+      if (!deals.has(key) || deals.get(key)!.savingsScore < score) {
+        deals.set(key, {
+          product: group.displayName,
+          brand: group.brand,
+          size: group.size,
+          imageUrl: group.imageUrl,
+          chain: cheapest.chain,
+          chainName: cheapest.chainName,
+          chainColor: cheapest.chainColor,
+          effectivePrice: cheapest.effectivePrice,
+          regularPrice: group.mostExpensivePrice,
+          discountPercent: group.savingsPercent,
+          productUrl: cheapest.productUrl,
+          savingsScore: score,
+        });
+      }
+    }
   }
 
-  // Sort by savings score, take top N
-  const sorted = Array.from(deals.values())
+  // Deduplicate: keep best deal per matchKey
+  const bestPerProduct = new Map<string, Deal>();
+  for (const deal of deals.values()) {
+    const productKey = `${deal.brand}|${deal.size}`;
+    const existing = bestPerProduct.get(productKey);
+    if (!existing || deal.savingsScore > existing.savingsScore) {
+      bestPerProduct.set(productKey, deal);
+    }
+  }
+
+  const sorted = Array.from(bestPerProduct.values())
     .sort((a, b) => b.savingsScore - a.savingsScore)
     .slice(0, MAX_DEALS);
 
@@ -112,12 +96,58 @@ export async function aggregateDeals(): Promise<DealsResponse> {
   };
 }
 
-function formatName(name: string): string {
-  if (name === name.toUpperCase()) {
-    return name
-      .toLowerCase()
-      .replace(/(?:^|\s)\S/g, (c) => c.toUpperCase())
-      .replace(/\b(L|Kg|G|Ml|M3|Cm|Mm|Tk)\b/gi, (u) => u.toUpperCase());
+/**
+ * Score formula — cross-chain spread is the LEADING indicator.
+ *
+ * Why: The biggest price spreads reveal loss leaders — products where
+ * one chain dumps the price to attract foot traffic. That's the real
+ * savings for the user. Chain-reported "discounts" can be inflated.
+ *
+ * spread deals:  spreadPercent * 2 + chainBonus + eurBonus
+ * discount deals: discountPercent * 1 + chainBonus
+ *
+ * Products at 4 chains get +25 bonus (most popular = most useful).
+ * Spreads over €5 get extra +10 (real money saved).
+ */
+function computeSpreadScore(
+  spreadPercent: number,
+  chainCount: number,
+  spreadEur: number
+): number {
+  const chainBonus = chainCount >= 4 ? 25 : chainCount >= 3 ? 15 : 0;
+  const eurBonus = spreadEur >= 10 ? 20 : spreadEur >= 5 ? 10 : 0;
+  return spreadPercent * 2 + chainBonus + eurBonus;
+}
+
+function computeDiscountScore(
+  discountPercent: number,
+  chainCount: number
+): number {
+  const chainBonus = chainCount >= 4 ? 25 : chainCount >= 3 ? 15 : 0;
+  return discountPercent + chainBonus;
+}
+
+async function loadCatalogProducts(): Promise<ProductGroup[]> {
+  if (
+    !process.env.UPSTASH_REDIS_REST_URL ||
+    !process.env.UPSTASH_REDIS_REST_TOKEN
+  ) {
+    return [];
   }
-  return name;
+
+  const redis = Redis.fromEnv();
+  const categoryIds = CATEGORIES.map((c) => c.id);
+  const allProducts: ProductGroup[] = [];
+
+  const results = await Promise.allSettled(
+    categoryIds.map((id) => redis.get<SearchResponse>(`catalog:${id}`))
+  );
+
+  for (const result of results) {
+    if (result.status === "fulfilled" && result.value?.comparable) {
+      allProducts.push(...result.value.comparable);
+    }
+  }
+
+  return allProducts;
 }
