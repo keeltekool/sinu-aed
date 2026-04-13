@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import type { SearchResponse } from "./types";
 
 const DEFAULT_TTL = 3600; // 1 hour
 
@@ -55,5 +56,20 @@ export async function getCached<T>(
       // Redis also failed
     }
     throw fetchError;
+  }
+}
+
+/**
+ * Get pre-built catalog data for a category.
+ * Returns null if catalog doesn't exist or Redis is unavailable.
+ */
+export async function getCatalog(categoryId: string): Promise<SearchResponse | null> {
+  const r = getRedis();
+  if (!r) return null;
+
+  try {
+    return await r.get<SearchResponse>(`catalog:${categoryId}`);
+  } catch {
+    return null;
   }
 }

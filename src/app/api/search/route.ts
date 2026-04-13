@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchAllChains } from "../../../lib/scrapers";
 import { groupByProduct } from "../../../lib/matcher";
-import { getCached } from "../../../lib/cache";
+import { getCached, getCatalog } from "../../../lib/cache";
+import { CATEGORIES } from "../../../lib/constants";
 import type { SearchResponse } from "../../../lib/types";
 
 export async function GET(request: NextRequest) {
@@ -15,6 +16,23 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Check if query matches a category — if so, try pre-built catalog first
+    const category = CATEGORIES.find(
+      (c) => c.searchQuery.toLowerCase() === query.toLowerCase()
+    );
+
+    if (category) {
+      const catalogData = await getCatalog(category.id);
+      if (catalogData) {
+        return NextResponse.json(catalogData, {
+          headers: {
+            "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+          },
+        });
+      }
+    }
+
+    // Fallback: live search (for free-text queries or when catalog is empty)
     const response = await getCached<SearchResponse>(
       `search:${query.toLowerCase()}`,
       async () => {
