@@ -9,10 +9,10 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 import { Redis } from "@upstash/redis";
-import { searchAllChains } from "../src/lib/scrapers/index.js";
-import { groupByProduct } from "../src/lib/matcher.js";
-import type { RawProduct, ProductGroup, SearchResponse } from "../src/lib/types.js";
-import { CATEGORIES } from "../src/lib/constants.js";
+import { searchAllChains } from "../src/lib/scrapers/index";
+import { groupByProduct } from "../src/lib/matcher";
+import type { RawProduct, ProductGroup, SearchResponse } from "../src/lib/types";
+import { CATEGORIES } from "../src/lib/constants";
 
 // ─── Configuration ──────────────────────────────────────────
 
