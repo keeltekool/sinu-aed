@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import Link from "next/link";
 import SearchBar from "../../components/SearchBar";
 import ProductCard from "../../components/ProductCard";
 import { CATEGORIES } from "../../lib/constants";
@@ -53,7 +54,20 @@ function SearchResults() {
 
   return (
     <div className="pt-6 space-y-6">
-      <SearchBar initialQuery={query} />
+      <div className="flex items-center gap-2">
+        <Link
+          href="/"
+          className="flex-shrink-0 p-2 -ml-2 rounded-full hover:bg-surface-container-low transition-colors"
+          aria-label="Tagasi avalehele"
+        >
+          <span className="material-symbols-outlined text-on-surface text-2xl">
+            arrow_back
+          </span>
+        </Link>
+        <div className="flex-1">
+          <SearchBar initialQuery={query} />
+        </div>
+      </div>
 
       {matchedCategory && (
         <h2 className="headline font-semibold text-2xl text-primary">
