@@ -92,11 +92,12 @@ export function groupByProduct(products: RawProduct[]): {
   const singleChain: ProductGroup[] = [];
 
   for (const [matchKey, prods] of groups) {
-    const group = buildProductGroup(matchKey, prods);
+    // Price sanity: strip outlier chains where price is >3x the median
+    // Keep the product, just remove the bad chain
+    const sanitized = stripPriceOutliers(prods);
+
+    const group = buildProductGroup(matchKey, sanitized);
     if (group.chainCount >= 2) {
-      // Price sanity filter: if most expensive is >3x cheapest, it's a false match
-      const ratio = group.mostExpensivePrice / group.cheapestPrice;
-      if (ratio > 3) continue; // skip false matches
       comparable.push(group);
     } else {
       singleChain.push(group);
@@ -174,6 +175,34 @@ function buildProductGroup(
     savingsPercent,
     chainCount: chains.length,
   };
+}
+
+// ─── Price Outlier Removal ────────────────────────────────
+
+const MAX_PRICE_RATIO = 3;
+
+/**
+ * Remove chains with outlier prices from a product group.
+ * If chain X charges 5x what other chains charge, strip chain X —
+ * it's likely a false match (different product). Keep the rest.
+ */
+function stripPriceOutliers(prods: NormalizedProduct[]): NormalizedProduct[] {
+  if (prods.length <= 1) return prods;
+
+  // Get effective prices sorted
+  const withPrices = prods.map((p) => ({
+    product: p,
+    price: p.salePrice ?? p.regularPrice,
+  }));
+  withPrices.sort((a, b) => a.price - b.price);
+
+  const cheapest = withPrices[0].price;
+  if (cheapest <= 0) return prods;
+
+  // Keep only chains within 3x of cheapest
+  return withPrices
+    .filter((wp) => wp.price / cheapest <= MAX_PRICE_RATIO)
+    .map((wp) => wp.product);
 }
 
 // ─── Fuzzy Matching (Pass 2) ──────────────────────────────
